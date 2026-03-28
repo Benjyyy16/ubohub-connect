@@ -62,6 +62,7 @@ const PENDING_CERTS = [
 const ProfessorView = () => {
   const [selectedProject, setSelectedProject] = useState(1);
   const [showNewInitiative, setShowNewInitiative] = useState(false);
+  const [closureStudent, setClosureStudent] = useState<typeof PENDING_CERTS[number] | null>(null);
 
   return (
     <div className="space-y-8">
