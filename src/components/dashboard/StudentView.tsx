@@ -1,8 +1,9 @@
 import {
   Sparkles, Heart, Zap, ShieldCheck, Award, Clock, ArrowRight, Star,
-  Code, Palette, BookOpen, Beaker, Globe, Lightbulb, Leaf, Monitor
+  Code, Palette, BookOpen, Beaker, Globe, Lightbulb, Leaf, Monitor, ExternalLink
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
 
 const SKILLS = ["React", "Python", "UX Research", "Figma", "SQL"];
 const INTERESTS = ["EdTech", "Sustentabilidad", "IA Educativa", "Inclusión"];
