@@ -216,6 +216,7 @@ const ProfessorView = () => {
           ))}
         </div>
       </section>
+      <NewInitiativePanel open={showNewInitiative} onClose={() => setShowNewInitiative(false)} />
     </div>
   );
 };
