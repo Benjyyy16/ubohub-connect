@@ -59,6 +59,7 @@ const PENDING_CERTS = [
 
 const ProfessorView = () => {
   const [selectedProject, setSelectedProject] = useState(1);
+  const [showNewInitiative, setShowNewInitiative] = useState(false);
 
   return (
     <div className="animate-slide-in space-y-8">
