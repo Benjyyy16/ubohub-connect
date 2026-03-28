@@ -208,18 +208,23 @@ const ProfessorView = () => {
                   <p className="text-xs text-muted-foreground">{cert.career} · {cert.project} · {cert.hours}h</p>
                 </div>
               </div>
-              <button className="btn-press flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-xs font-bold text-accent-foreground shadow-sm transition-all hover:shadow-md hover:bg-accent/90">
+              <button
+                onClick={() => setClosureStudent(cert)}
+                className="btn-press flex items-center gap-2 rounded-lg bg-accent px-4 py-2 text-xs font-bold text-accent-foreground shadow-sm transition-all hover:shadow-md hover:bg-accent/90"
+              >
                 <Award className="h-4 w-4" />
-                Emitir Insignia
-                <span className="mx-1 text-accent-foreground/50">|</span>
-                <Download className="h-3.5 w-3.5" />
-                PDF
+                Finalizar y Emitir Credencial
               </button>
             </div>
           ))}
         </div>
       </section>
       <NewInitiativePanel open={showNewInitiative} onClose={() => setShowNewInitiative(false)} />
+      <ProjectClosureModal
+        open={!!closureStudent}
+        onClose={() => setClosureStudent(null)}
+        student={closureStudent}
+      />
     </div>
   );
 };
