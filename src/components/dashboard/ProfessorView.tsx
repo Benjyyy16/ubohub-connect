@@ -4,7 +4,7 @@ import {
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
-
+import NewInitiativePanel from "./NewInitiativePanel";
 const INITIATIVES = [
   {
     id: 1,
