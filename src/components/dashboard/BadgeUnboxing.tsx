@@ -7,13 +7,60 @@ interface Props {
   onClose: () => void;
 }
 
+const playUnboxingEffect = () => {
+  // Haptic Feedback
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const nav = navigator as any;
+    if (nav.vibrate) {
+      nav.vibrate([50, 100, 150]); // pattern: vibrate, pause, vibrate
+    }
+  } catch (e) {
+    // Ignore haptic errors
+  }
+
+  // Audio Context for subtle success chime
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const AudioContextClass = (window as any).AudioContext || (window as any).webkitAudioContext;
+      
+    if (AudioContextClass) {
+      const ctx = new AudioContextClass();
+      const playNote = (freq: number, delay: number) => {
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.type = "sine";
+        osc.frequency.value = freq;
+        gain.gain.setValueAtTime(0, ctx.currentTime + delay);
+        gain.gain.linearRampToValueAtTime(0.1, ctx.currentTime + delay + 0.05);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 1.0);
+        osc.start(ctx.currentTime + delay);
+        osc.stop(ctx.currentTime + delay + 1.0);
+      };
+      // C Major arpeggio
+      playNote(523.25, 0);   // C5
+      playNote(659.25, 0.1); // E5
+      playNote(783.99, 0.2); // G5
+      playNote(1046.50, 0.3); // C6
+    }
+  } catch (e) {
+    console.warn("Audio not supported or disabled", e);
+  }
+};
+
 const BadgeUnboxing = ({ open, onClose }: Props) => {
   const [revealed, setRevealed] = useState(false);
   const navigate = useNavigate();
 
+
   useEffect(() => {
     if (open) {
-      const t = setTimeout(() => setRevealed(true), 400);
+      const t = setTimeout(() => {
+        setRevealed(true);
+        playUnboxingEffect();
+      }, 400);
       return () => clearTimeout(t);
     }
     setRevealed(false);
