@@ -4,7 +4,7 @@ import {
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
-
+import NewInitiativePanel from "./NewInitiativePanel";
 const INITIATIVES = [
   {
     id: 1,
@@ -59,6 +59,7 @@ const PENDING_CERTS = [
 
 const ProfessorView = () => {
   const [selectedProject, setSelectedProject] = useState(1);
+  const [showNewInitiative, setShowNewInitiative] = useState(false);
 
   return (
     <div className="animate-slide-in space-y-8">
@@ -68,7 +69,10 @@ const ProfessorView = () => {
           <h2 className="text-xl font-bold text-foreground">Panel de Académico</h2>
           <p className="text-sm text-muted-foreground">Dra. Carmen López · Facultad de Pedagogía</p>
         </div>
-        <button className="flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-md transition-all hover:shadow-lg hover:bg-primary/90">
+        <button
+          onClick={() => setShowNewInitiative(true)}
+          className="flex items-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-md transition-all hover:shadow-lg hover:bg-primary/90"
+        >
           <Plus className="h-4 w-4" /> Levantar Nueva Iniciativa
         </button>
       </div>
@@ -212,6 +216,7 @@ const ProfessorView = () => {
           ))}
         </div>
       </section>
+      <NewInitiativePanel open={showNewInitiative} onClose={() => setShowNewInitiative(false)} />
     </div>
   );
 };
