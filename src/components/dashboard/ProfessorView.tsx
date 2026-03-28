@@ -5,6 +5,7 @@ import {
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
 import NewInitiativePanel from "./NewInitiativePanel";
+import ProjectClosureModal from "./ProjectClosureModal";
 
 const INITIATIVES = [
   {
