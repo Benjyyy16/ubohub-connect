@@ -1,10 +1,12 @@
-import { Bell, Search, GraduationCap, BookOpen, Sparkles, Building2 } from "lucide-react";
+import { Search, GraduationCap, BookOpen, Sparkles, Building2 } from "lucide-react";
+import NotificationCenter from "./NotificationCenter";
 
 type ViewType = "student" | "professor" | "admin";
 
 interface TopBarProps {
   activeView: ViewType;
   onToggle: (view: ViewType) => void;
+  onBadgeNotifClick?: () => void;
 }
 
 const TABS: { key: ViewType; label: string; icon: typeof BookOpen }[] = [
@@ -13,7 +15,7 @@ const TABS: { key: ViewType; label: string; icon: typeof BookOpen }[] = [
   { key: "admin", label: "Institución", icon: Building2 },
 ];
 
-const TopBar = ({ activeView, onToggle }: TopBarProps) => {
+const TopBar = ({ activeView, onToggle, onBadgeNotifClick }: TopBarProps) => {
   const activeIdx = TABS.findIndex(t => t.key === activeView);
   const tabCount = TABS.length;
 
@@ -60,10 +62,7 @@ const TopBar = ({ activeView, onToggle }: TopBarProps) => {
           <button className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
             <Search className="h-5 w-5" />
           </button>
-          <button className="relative rounded-lg p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground">
-            <Bell className="h-5 w-5" />
-            <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-primary animate-pulse" />
-          </button>
+          <NotificationCenter onBadgeClick={onBadgeNotifClick} />
           <div className="h-8 w-8 overflow-hidden rounded-full bg-primary-light ring-2 ring-primary/10">
             <img
               src="https://api.dicebear.com/9.x/avataaars/svg?seed=Maria"

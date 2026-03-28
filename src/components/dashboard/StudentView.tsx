@@ -1,9 +1,13 @@
+import { useState } from "react";
 import {
-  Sparkles, Heart, Zap, ShieldCheck, Award, Clock, ArrowRight, Star,
+  Sparkles, Heart, Zap, ShieldCheck, Award, Clock, Star,
   Code, Palette, BookOpen, Beaker, Globe, Lightbulb, Leaf, Monitor, ExternalLink
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "react-router-dom";
+import {
+  Tooltip, TooltipContent, TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const SKILLS = ["React", "Python", "UX Research", "Figma", "SQL"];
 const INTERESTS = ["EdTech", "Sustentabilidad", "IA Educativa", "Inclusión"];
@@ -55,7 +59,9 @@ const CREDENTIALS = [
   {
     id: 1,
     title: "Análisis de Datos",
-    context: "Lab. Física — Proyecto Sismología Institucional",
+    context: "Lab. Física — Proyecto Sismología",
+    faculty: "Facultad de Ciencias",
+    date: "28/03/2026",
     hours: 120,
     icon: Beaker,
     color: "primary" as const,
@@ -64,6 +70,8 @@ const CREDENTIALS = [
     id: 2,
     title: "Desarrollo Frontend",
     context: "Depto. Informática — Portal Estudiantil",
+    faculty: "Facultad de Ingeniería",
+    date: "15/02/2026",
     hours: 80,
     icon: Code,
     color: "accent" as const,
@@ -72,11 +80,143 @@ const CREDENTIALS = [
     id: 3,
     title: "Diseño UX/UI",
     context: "Lab. Innovación — App Salud Mental",
+    faculty: "Facultad de Diseño",
+    date: "10/01/2026",
     hours: 60,
     icon: Palette,
     color: "success" as const,
   },
+  {
+    id: 4,
+    title: "Python Interdisciplinario",
+    context: "Fac. Ciencias — Prof. Ramírez",
+    faculty: "Facultad de Ciencias",
+    date: "28/03/2026",
+    hours: 90,
+    icon: Globe,
+    color: "primary" as const,
+    isNew: true,
+  },
+  {
+    id: 5,
+    title: "Gestión Ágil de Proyectos",
+    context: "Vicerrectoría de Innovación",
+    faculty: "Institucional",
+    date: "20/12/2025",
+    hours: 40,
+    icon: BookOpen,
+    color: "accent" as const,
+  },
 ];
+
+const colorMap = {
+  primary: {
+    stroke: "hsl(var(--primary))",
+    fill: "hsl(var(--primary-light))",
+    text: "text-primary",
+    icon: "text-primary",
+    glow: "shadow-primary/20",
+    bg: "bg-primary-light",
+  },
+  accent: {
+    stroke: "hsl(var(--accent))",
+    fill: "hsl(var(--accent-light))",
+    text: "text-accent",
+    icon: "text-accent",
+    glow: "shadow-accent/20",
+    bg: "bg-accent-light",
+  },
+  success: {
+    stroke: "hsl(var(--success))",
+    fill: "hsl(var(--success-light))",
+    text: "text-success",
+    icon: "text-success",
+    glow: "shadow-success/20",
+    bg: "bg-success-light",
+  },
+};
+
+// Hexagonal badge medal component
+const HexBadge = ({ cred }: { cred: typeof CREDENTIALS[number] }) => {
+  const c = colorMap[cred.color];
+  const [hovered, setHovered] = useState(false);
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
+          className="card-magnetic group flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-5 shadow-sm cursor-pointer"
+          onMouseEnter={() => setHovered(true)}
+          onMouseLeave={() => setHovered(false)}
+        >
+          {/* Hexagonal medal */}
+          <div className="relative flex h-20 w-20 items-center justify-center">
+            <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
+              <polygon
+                points="50,4 91,27 91,73 50,96 9,73 9,27"
+                fill="none"
+                stroke={c.stroke}
+                strokeWidth="3"
+                className={`transition-all duration-500 ${hovered ? "drop-shadow-lg" : ""}`}
+              />
+              <polygon
+                points="50,10 86,30 86,70 50,90 14,70 14,30"
+                fill={c.fill}
+                className="transition-all duration-300"
+              />
+            </svg>
+
+            {/* Icon */}
+            <cred.icon className={`relative z-10 h-8 w-8 ${c.icon} transition-transform duration-300 ${hovered ? "scale-110" : ""}`} />
+
+            {/* Shine sweep on hover */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div
+                className={`absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ${
+                  hovered ? "translate-x-full" : "-translate-x-full"
+                }`}
+                style={{ width: "60%" }}
+              />
+            </div>
+
+            {/* New badge indicator */}
+            {"isNew" in cred && cred.isNew && (
+              <div className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary shadow-md animate-pulse">
+                <Sparkles className="h-3 w-3 text-primary-foreground" />
+              </div>
+            )}
+          </div>
+
+          {/* Title */}
+          <div className="text-center">
+            <h4 className="text-sm font-semibold text-foreground">{cred.title}</h4>
+            <p className="mt-0.5 text-[10px] text-muted-foreground">{cred.context}</p>
+          </div>
+
+          {/* Hours + Verified */}
+          <div className="flex items-center gap-2">
+            <span className={`flex items-center gap-1 text-[10px] font-semibold ${c.text}`}>
+              <Clock className="h-3 w-3" /> {cred.hours}h
+            </span>
+            <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
+              <ShieldCheck className="h-3 w-3" /> Verificado
+            </span>
+          </div>
+        </div>
+      </TooltipTrigger>
+      <TooltipContent side="bottom" className="max-w-xs">
+        <div className="space-y-1">
+          <p className="text-xs font-semibold">{cred.title}</p>
+          <p className="text-[11px] text-muted-foreground">Emitido el {cred.date} · {cred.hours} Horas · {cred.faculty}</p>
+          <p className="text-[11px] text-muted-foreground">{cred.context}</p>
+          <p className="flex items-center gap-1 text-[10px] text-primary font-medium">
+            <ShieldCheck className="h-3 w-3" /> Verificado por TalentLink
+          </p>
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  );
+};
 
 const MatchCircle = ({ value }: { value: number }) => {
   const circumference = 2 * Math.PI * 18;
@@ -111,7 +251,7 @@ const StudentView = () => {
               className="h-full w-full object-cover"
             />
           </div>
-            <div className="flex-1 space-y-3">
+          <div className="flex-1 space-y-3">
             <div className="flex items-center justify-between">
               <div>
                 <h2 className="text-xl font-bold text-foreground">María González Soto</h2>
@@ -189,37 +329,21 @@ const StudentView = () => {
         </div>
       </section>
 
-      {/* Credentials */}
+      {/* Credentials Gallery */}
       <section>
-        <div className="mb-4 flex items-center gap-2">
-          <Award className="h-5 w-5 text-primary" />
-          <h3 className="text-lg font-bold text-foreground">Mi Billetera de Credenciales</h3>
+        <div className="mb-4 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Award className="h-5 w-5 text-primary" />
+            <h3 className="text-lg font-bold text-foreground">Galería de Insignias</h3>
+            <span className="rounded-full bg-primary-light px-2 py-0.5 text-xs font-semibold text-primary">{CREDENTIALS.length} obtenidas</span>
+          </div>
         </div>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {CREDENTIALS.map((cred) => {
-            const colorMap = {
-              primary: { bg: "bg-primary-light", text: "text-primary", border: "border-primary/20", icon: "text-primary" },
-              accent: { bg: "bg-accent-light", text: "text-accent", border: "border-accent/20", icon: "text-accent" },
-              success: { bg: "bg-success-light", text: "text-success", border: "border-success/20", icon: "text-success" },
-            };
-            const c = colorMap[cred.color];
-            return (
-              <div key={cred.id} className={`card-magnetic rounded-xl border ${c.border} bg-card p-5 shadow-sm`}>
-                <div className="mb-3 flex items-center gap-3">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${c.bg}`}>
-                    <cred.icon className={`h-5 w-5 ${c.icon}`} />
-                  </div>
-                  <ShieldCheck className={`h-4 w-4 ${c.icon}`} />
-                </div>
-                <h4 className="font-semibold text-foreground">{cred.title}</h4>
-                <p className="mt-1 text-xs text-muted-foreground">{cred.context}</p>
-                <div className="mt-3 flex items-center gap-1.5 text-xs font-semibold">
-                  <Clock className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className={c.text}>{cred.hours} horas validadas</span>
-                </div>
-              </div>
-            );
-          })}
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          {CREDENTIALS.map((cred, idx) => (
+            <div key={cred.id} className={`stagger-${Math.min(idx + 1, 4)}`}>
+              <HexBadge cred={cred} />
+            </div>
+          ))}
         </div>
       </section>
     </div>
