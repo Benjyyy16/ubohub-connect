@@ -10,7 +10,7 @@ type ViewType = "student" | "professor" | "admin";
 const Index = () => {
   const [activeView, setActiveView] = useState<ViewType>("student");
   const [viewKey, setViewKey] = useState(0);
-  const [showBadgeUnboxing, setShowBadgeUnboxing] = useState(true);
+  const [showBadgeUnboxing, setShowBadgeUnboxing] = useState(false);
 
   const handleToggle = useCallback((view: ViewType) => {
     setActiveView(view);
