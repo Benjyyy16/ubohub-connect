@@ -1,11 +1,22 @@
-import { Bell, Search, GraduationCap, BookOpen, Sparkles } from "lucide-react";
+import { Bell, Search, GraduationCap, BookOpen, Sparkles, Building2 } from "lucide-react";
+
+type ViewType = "student" | "professor" | "admin";
 
 interface TopBarProps {
-  activeView: "student" | "professor";
-  onToggle: (view: "student" | "professor") => void;
+  activeView: ViewType;
+  onToggle: (view: ViewType) => void;
 }
 
+const TABS: { key: ViewType; label: string; icon: typeof BookOpen }[] = [
+  { key: "student", label: "Estudiante", icon: BookOpen },
+  { key: "professor", label: "Profesor", icon: GraduationCap },
+  { key: "admin", label: "Institución", icon: Building2 },
+];
+
 const TopBar = ({ activeView, onToggle }: TopBarProps) => {
+  const activeIdx = TABS.findIndex(t => t.key === activeView);
+  const tabCount = TABS.length;
+
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-card/80 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
@@ -19,37 +30,29 @@ const TopBar = ({ activeView, onToggle }: TopBarProps) => {
           </span>
         </div>
 
-        {/* View Toggle */}
+        {/* View Toggle — 3 tabs */}
         <div className="relative flex h-10 items-center rounded-full bg-muted p-1">
           <div
             className="absolute h-8 rounded-full bg-primary shadow-md shadow-primary/20 transition-all duration-300 ease-out"
             style={{
-              width: "calc(50% - 4px)",
-              left: activeView === "student" ? "4px" : "calc(50%)",
+              width: `calc(${100 / tabCount}% - ${4}px)`,
+              left: `calc(${(activeIdx * 100) / tabCount}% + 4px)`,
             }}
           />
-          <button
-            onClick={() => onToggle("student")}
-            className={`relative z-10 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold transition-colors duration-200 ${
-              activeView === "student"
-                ? "text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <BookOpen className="h-3.5 w-3.5" />
-            Estudiante
-          </button>
-          <button
-            onClick={() => onToggle("professor")}
-            className={`relative z-10 flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-semibold transition-colors duration-200 ${
-              activeView === "professor"
-                ? "text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            <GraduationCap className="h-3.5 w-3.5" />
-            Profesor
-          </button>
+          {TABS.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => onToggle(tab.key)}
+              className={`relative z-10 flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-sm font-semibold transition-colors duration-200 ${
+                activeView === tab.key
+                  ? "text-primary-foreground"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <tab.icon className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">{tab.label}</span>
+            </button>
+          ))}
         </div>
 
         {/* Right actions */}
