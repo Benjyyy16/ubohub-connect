@@ -54,7 +54,7 @@ const CREDENTIALS = [
   {
     id: 1,
     title: "Análisis de Datos",
-    context: "Lab. Física — Proyecto Sismología UBO",
+    context: "Lab. Física — Proyecto Sismología Institucional",
     hours: 120,
     icon: Beaker,
     color: "primary" as const,
@@ -86,7 +86,7 @@ const MatchCircle = ({ value }: { value: number }) => {
         <circle cx="20" cy="20" r="18" fill="none" stroke="hsl(var(--border))" strokeWidth="3" />
         <circle
           cx="20" cy="20" r="18" fill="none"
-          stroke={value >= 90 ? "hsl(var(--success))" : value >= 80 ? "hsl(var(--info))" : "hsl(var(--warning))"}
+          stroke={value >= 90 ? "hsl(var(--success))" : value >= 80 ? "hsl(var(--primary))" : "hsl(var(--warning))"}
           strokeWidth="3" strokeLinecap="round"
           strokeDasharray={circumference} strokeDashoffset={offset}
           className="transition-all duration-700"
@@ -99,11 +99,11 @@ const MatchCircle = ({ value }: { value: number }) => {
 
 const StudentView = () => {
   return (
-    <div className="animate-slide-in space-y-8">
+    <div className="space-y-8">
       {/* Profile Header */}
-      <div className="watermark-bg overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm">
+      <div className="watermark-bg card-magnetic overflow-hidden rounded-xl border border-border bg-card p-6 shadow-sm">
         <div className="flex flex-col gap-5 sm:flex-row sm:items-start">
-          <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-primary-light">
+          <div className="h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-primary/20 shadow-md shadow-primary/10">
             <img
               src="https://api.dicebear.com/9.x/avataaars/svg?seed=Maria"
               alt="María González"
@@ -123,7 +123,7 @@ const StudentView = () => {
                   </span>
                 ))}
               </div>
-              <div className="flex flex-wrap gap-1.5">
+              <div className="flex flex-wrap items-center gap-1.5">
                 <Heart className="mr-1 h-3.5 w-3.5 text-accent" />
                 {INTERESTS.map((i) => (
                   <span key={i} className="rounded-md bg-accent-light px-2.5 py-1 text-xs font-semibold text-accent">
@@ -139,13 +139,13 @@ const StudentView = () => {
       {/* Smart Match */}
       <section>
         <div className="mb-4 flex items-center gap-2">
-          <Sparkles className="h-5 w-5 text-accent" />
+          <Sparkles className="h-5 w-5 text-primary" />
           <h3 className="text-lg font-bold text-foreground">Oportunidades Recomendadas</h3>
-          <span className="ml-1 rounded-full bg-accent-light px-2 py-0.5 text-xs font-semibold text-accent">Smart Match</span>
+          <span className="ml-1 rounded-full bg-primary-light px-2 py-0.5 text-xs font-semibold text-primary">Smart Match</span>
         </div>
         <div className="grid gap-4 sm:grid-cols-2">
-          {OPPORTUNITIES.map((opp) => (
-            <div key={opp.id} className="group flex gap-4 rounded-xl border border-border bg-card p-5 shadow-sm transition-shadow hover:shadow-md">
+          {OPPORTUNITIES.map((opp, idx) => (
+            <div key={opp.id} className={`group card-magnetic flex gap-4 rounded-xl border border-border bg-card p-5 shadow-sm stagger-${idx + 1}`}>
               <MatchCircle value={opp.match} />
               <div className="flex-1 space-y-2.5">
                 <div>
@@ -158,8 +158,8 @@ const StudentView = () => {
                       key={t}
                       className={`rounded-full px-2 py-0.5 text-[10px] font-semibold ${
                         t.includes("Interés")
-                          ? "bg-accent-light text-accent"
-                          : "bg-primary-light text-primary"
+                          ? "tag-glow-accent text-accent"
+                          : "tag-glow-primary text-primary"
                       }`}
                     >
                       {t}
@@ -171,7 +171,7 @@ const StudentView = () => {
                     </span>
                   ))}
                 </div>
-                <button className="flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
+                <button className="btn-press flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
                   <Zap className="h-3 w-3" /> Postular con 1 clic
                 </button>
               </div>
@@ -195,7 +195,7 @@ const StudentView = () => {
             };
             const c = colorMap[cred.color];
             return (
-              <div key={cred.id} className={`rounded-xl border ${c.border} bg-card p-5 shadow-sm`}>
+              <div key={cred.id} className={`card-magnetic rounded-xl border ${c.border} bg-card p-5 shadow-sm`}>
                 <div className="mb-3 flex items-center gap-3">
                   <div className={`flex h-10 w-10 items-center justify-center rounded-lg ${c.bg}`}>
                     <cred.icon className={`h-5 w-5 ${c.icon}`} />

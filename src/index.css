@@ -10,39 +10,37 @@
 
 @layer base {
   :root {
-    --background: 210 20% 98%;
-    --foreground: 220 25% 10%;
+    --background: 220 20% 97%;
+    --foreground: 222 28% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 10%;
+    --card-foreground: 222 28% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 10%;
+    --popover-foreground: 222 28% 10%;
 
-    --primary: 210 60% 22%;
+    --primary: 221 83% 53%;
     --primary-foreground: 210 40% 98%;
+    --primary-light: 221 70% 96%;
 
-    --primary-light: 210 50% 95%;
+    --secondary: 220 20% 96%;
+    --secondary-foreground: 222 28% 10%;
 
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 220 25% 10%;
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 13% 46%;
 
-    --muted: 210 15% 95%;
-    --muted-foreground: 215 14% 46%;
-
-    --accent: 350 65% 38%;
+    --accent: 262 60% 50%;
     --accent-foreground: 0 0% 100%;
-
-    --accent-light: 350 60% 95%;
+    --accent-light: 262 50% 96%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214 25% 91%;
-    --input: 214 25% 91%;
-    --ring: 210 60% 22%;
+    --border: 220 20% 92%;
+    --input: 220 20% 92%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.625rem;
+    --radius: 0.75rem;
 
     --success: 152 60% 38%;
     --success-foreground: 0 0% 100%;
@@ -78,6 +76,100 @@
 
 @layer utilities {
   .watermark-bg {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200' viewBox='0 0 200 200'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Plus Jakarta Sans, sans-serif' font-size='60' font-weight='800' fill='%23000' opacity='0.02' transform='rotate(-30 100 100)'%3EUBO%3C/text%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='Plus Jakarta Sans, sans-serif' font-size='36' font-weight='800' fill='%232563EB' opacity='0.03' transform='rotate(-25 120 120)'%3ETalentLink%3C/text%3E%3C/svg%3E");
   }
+
+  /* Magnetic card effect */
+  .card-magnetic {
+    @apply transition-all duration-300 ease-out;
+  }
+  .card-magnetic:hover {
+    @apply -translate-y-1 shadow-lg;
+    box-shadow: 0 12px 28px -8px hsl(var(--primary) / 0.12), 0 4px 10px -4px hsl(var(--primary) / 0.06);
+    border-color: hsl(var(--primary) / 0.2);
+  }
+
+  /* CTA press effect */
+  .btn-press {
+    @apply transition-all duration-150;
+  }
+  .btn-press:active {
+    @apply scale-[0.96];
+  }
+
+  /* Sparkle icon hover animation */
+  .group:hover .sparkle-icon,
+  .btn-press:hover .sparkle-icon {
+    animation: sparkle-rotate 0.6s ease-out;
+  }
+
+  /* Match tag glow */
+  .tag-glow-primary {
+    background: linear-gradient(135deg, hsl(var(--primary-light)), hsl(var(--primary) / 0.12));
+    box-shadow: 0 0 8px hsl(var(--primary) / 0.15);
+  }
+  .tag-glow-accent {
+    background: linear-gradient(135deg, hsl(var(--accent-light)), hsl(var(--accent) / 0.12));
+    box-shadow: 0 0 8px hsl(var(--accent) / 0.15);
+  }
+
+  /* Staggered reveal */
+  .stagger-1 { animation: card-reveal 0.5s ease-out 0.1s both; }
+  .stagger-2 { animation: card-reveal 0.5s ease-out 0.2s both; }
+  .stagger-3 { animation: card-reveal 0.5s ease-out 0.3s both; }
+  .stagger-4 { animation: card-reveal 0.5s ease-out 0.4s both; }
+
+  /* View transition */
+  .view-enter {
+    animation: view-fade-up 0.5s ease-out both;
+  }
+
+  /* Orbit loader */
+  .orbit-icon {
+    animation: orbit 2s linear infinite;
+  }
+  .orbit-icon-delayed {
+    animation: orbit 2s linear infinite 0.5s;
+  }
+  .orbit-icon-delayed-2 {
+    animation: orbit 2s linear infinite 1s;
+  }
+}
+
+@keyframes sparkle-rotate {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(180deg) scale(1.2); }
+  100% { transform: rotate(360deg) scale(1); }
+}
+
+@keyframes card-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes view-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(28px) rotate(0deg); }
+  to { transform: rotate(360deg) translateX(28px) rotate(-360deg); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.1); }
 }

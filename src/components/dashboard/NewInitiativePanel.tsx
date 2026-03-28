@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import {
   X, Sparkles, CheckCircle2, ChevronRight, ChevronLeft,
-  User, GraduationCap, Loader2, Users, Eye, Send, Rocket
+  User, GraduationCap, Users, Eye, Send, Rocket,
+  BookOpen, Palette, Beaker, Code, Globe
 } from "lucide-react";
-import { Progress } from "@/components/ui/progress";
 
 const SKILLS_OPTIONS = [
   "React", "Python", "Node.js", "SQL", "Figma", "UX Research",
@@ -57,6 +57,14 @@ const MOCK_CANDIDATES: Candidate[] = [
   },
 ];
 
+const ORBIT_ICONS = [
+  { Icon: BookOpen, label: "Educación" },
+  { Icon: Code, label: "Ingeniería" },
+  { Icon: Palette, label: "Diseño" },
+  { Icon: Beaker, label: "Ciencias" },
+  { Icon: Globe, label: "Humanidades" },
+];
+
 interface Props {
   open: boolean;
   onClose: () => void;
@@ -70,7 +78,7 @@ const TogglePill = ({
     onClick={onClick}
     className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-all duration-200 ${
       selected
-        ? "border-primary bg-primary text-primary-foreground shadow-sm"
+        ? "border-primary bg-primary text-primary-foreground shadow-sm shadow-primary/20"
         : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:bg-primary-light"
     }`}
   >
@@ -84,13 +92,13 @@ const StepIndicator = ({ current, total }: { current: number; total: number }) =
       <div key={i} className="flex items-center gap-2">
         <div className={`flex h-7 w-7 items-center justify-center rounded-full text-xs font-bold transition-all duration-300 ${
           i < current ? "bg-success text-success-foreground" :
-          i === current ? "bg-primary text-primary-foreground" :
+          i === current ? "bg-primary text-primary-foreground shadow-md shadow-primary/30" :
           "bg-muted text-muted-foreground"
         }`}>
           {i < current ? <CheckCircle2 className="h-4 w-4" /> : i + 1}
         </div>
         {i < total - 1 && (
-          <div className={`h-0.5 w-8 rounded-full transition-all duration-300 ${
+          <div className={`h-0.5 w-8 rounded-full transition-all duration-500 ${
             i < current ? "bg-success" : "bg-border"
           }`} />
         )}
@@ -107,6 +115,7 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [candidates, setCandidates] = useState<Candidate[]>([]);
+  const [showResults, setShowResults] = useState(false);
 
   useEffect(() => {
     if (!open) {
@@ -118,6 +127,7 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
         setSelectedInterests([]);
         setLoading(false);
         setCandidates([]);
+        setShowResults(false);
       }, 300);
     }
   }, [open]);
@@ -128,11 +138,13 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
 
   const handleSearch = () => {
     setLoading(true);
+    setShowResults(false);
     setStep(1);
     setTimeout(() => {
       setCandidates(MOCK_CANDIDATES.map(c => ({ ...c, invited: false })));
       setLoading(false);
-    }, 1800);
+      setTimeout(() => setShowResults(true), 100);
+    }, 2200);
   };
 
   const handleInvite = (id: number) => {
@@ -149,7 +161,7 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-50 bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-all duration-400 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={onClose}
@@ -157,14 +169,16 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
 
       {/* Panel */}
       <div
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-2xl flex-col bg-card shadow-2xl transition-transform duration-300 ease-out ${
-          open ? "translate-x-0" : "translate-x-full"
+        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-2xl flex-col bg-card shadow-2xl transition-all duration-500 ease-out ${
+          open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
         }`}
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">
           <div className="flex items-center gap-4">
-            <Rocket className="h-5 w-5 text-primary" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/20">
+              <Rocket className="h-4 w-4 text-primary-foreground" />
+            </div>
             <div>
               <h2 className="text-base font-bold text-foreground">Nueva Iniciativa</h2>
               <p className="text-xs text-muted-foreground">
@@ -185,9 +199,8 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
           {/* Step 0: Form */}
-          <div className={`transition-all duration-300 ${step === 0 ? "opacity-100" : "hidden opacity-0"}`}>
+          <div className={`transition-all duration-400 ${step === 0 ? "opacity-100" : "hidden opacity-0"}`}>
             <div className="space-y-6 p-6">
-              {/* Title */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-foreground">Título del Proyecto</label>
                 <input
@@ -195,24 +208,22 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
                   value={title}
                   onChange={e => setTitle(e.target.value)}
                   placeholder="Ej: Desarrollo de App para Inclusión Escolar"
-                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/60 transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 focus:shadow-md focus:shadow-primary/5"
                 />
               </div>
 
-              {/* Faculty */}
               <div className="space-y-2">
                 <label className="text-sm font-semibold text-foreground">Facultad de Origen</label>
                 <select
                   value={faculty}
                   onChange={e => setFaculty(e.target.value)}
-                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground transition-colors focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
+                  className="w-full rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground transition-all duration-200 focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
                 >
                   <option value="">Selecciona una facultad</option>
                   {FACULTIES.map(f => <option key={f} value={f}>{f}</option>)}
                 </select>
               </div>
 
-              {/* Skills */}
               <div className="space-y-3">
                 <label className="text-sm font-semibold text-foreground">
                   Habilidades Técnicas Requeridas
@@ -230,7 +241,6 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
                 </div>
               </div>
 
-              {/* Interests */}
               <div className="space-y-3">
                 <label className="text-sm font-semibold text-foreground">
                   Áreas de Interés / Motivación
@@ -251,21 +261,39 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
           </div>
 
           {/* Step 1: Results */}
-          <div className={`transition-all duration-300 ${step === 1 ? "opacity-100" : "hidden opacity-0"}`}>
+          <div className={`transition-all duration-400 ${step === 1 ? "opacity-100" : "hidden opacity-0"}`}>
             {loading ? (
-              <div className="flex flex-col items-center justify-center gap-4 py-24">
-                <div className="relative">
-                  <Loader2 className="h-10 w-10 animate-spin text-primary" />
-                  <Sparkles className="absolute -right-1 -top-1 h-4 w-4 text-accent animate-pulse" />
+              <div className="flex flex-col items-center justify-center gap-6 py-24">
+                {/* Orbiting faculty icons */}
+                <div className="relative flex h-24 w-24 items-center justify-center">
+                  <div className="absolute inset-0 rounded-full border-2 border-dashed border-primary/20 animate-[spin_8s_linear_infinite]" />
+                  <Sparkles className="h-8 w-8 text-primary animate-pulse" />
+                  {ORBIT_ICONS.map((item, i) => (
+                    <div
+                      key={item.label}
+                      className="absolute"
+                      style={{
+                        animation: `orbit 2.5s linear infinite ${i * 0.5}s`,
+                      }}
+                    >
+                      <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-card shadow-md border border-border">
+                        <item.Icon className="h-4 w-4 text-primary" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <p className="text-sm font-semibold text-foreground">Analizando perfiles interdisciplinarios en la red...</p>
-                <p className="text-xs text-muted-foreground">Cruzando habilidades, intereses y disponibilidad</p>
-                <Progress value={65} className="mt-2 h-1.5 w-48" />
+                <div className="text-center">
+                  <p className="text-sm font-semibold text-foreground">Analizando perfiles interdisciplinarios...</p>
+                  <p className="mt-1 text-xs text-muted-foreground">Cruzando habilidades, intereses y disponibilidad en la red</p>
+                </div>
+                <div className="h-1 w-48 overflow-hidden rounded-full bg-muted">
+                  <div className="h-full w-full animate-[shimmer_1.5s_ease-in-out_infinite] rounded-full bg-gradient-to-r from-transparent via-primary/60 to-transparent" style={{ backgroundSize: '200% 100%' }} />
+                </div>
               </div>
             ) : (
               <div className="space-y-5 p-6">
                 {/* Success banner */}
-                <div className="rounded-xl border border-success/20 bg-success-light p-4 text-center">
+                <div className={`rounded-xl border border-success/20 bg-success-light p-4 text-center transition-all duration-500 ${showResults ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'}`}>
                   <div className="flex items-center justify-center gap-2">
                     <Sparkles className="h-5 w-5 text-success" />
                     <p className="text-sm font-bold text-success">
@@ -275,12 +303,16 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
                   <p className="mt-1 text-xs text-muted-foreground">Mostrando los 3 mejores candidatos interdisciplinarios</p>
                 </div>
 
-                {/* Candidates */}
+                {/* Candidates - staggered */}
                 <div className="space-y-3">
-                  {candidates.map(c => (
-                    <div key={c.id} className={`rounded-xl border p-5 transition-all duration-300 ${
-                      c.invited ? "border-success/30 bg-success-light/50" : "border-border bg-card shadow-sm hover:shadow-md"
-                    }`}>
+                  {candidates.map((c, idx) => (
+                    <div
+                      key={c.id}
+                      className={`card-magnetic rounded-xl border p-5 transition-all duration-500 ${
+                        showResults ? `opacity-100 translate-y-0` : 'opacity-0 translate-y-6'
+                      } ${c.invited ? "border-success/30 bg-success-light/50" : "border-border bg-card shadow-sm"}`}
+                      style={{ transitionDelay: showResults ? `${(idx + 1) * 150}ms` : '0ms' }}
+                    >
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex items-center gap-3">
                           <div className="flex h-11 w-11 items-center justify-center rounded-full bg-primary-light">
@@ -295,7 +327,7 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
                         </div>
                         <div className="flex flex-col items-end gap-1">
                           <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
-                            c.match >= 95 ? "bg-success-light text-success" : c.match >= 90 ? "bg-primary-light text-primary" : "bg-accent-light text-accent"
+                            c.match >= 95 ? "bg-success-light text-success" : c.match >= 90 ? "tag-glow-primary text-primary" : "tag-glow-accent text-accent"
                           }`}>
                             {c.match}% Match
                           </span>
@@ -303,16 +335,16 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
                         </div>
                       </div>
 
-                      {/* Tags */}
+                      {/* Tags with glow for matches */}
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         {c.skills.map(s => (
-                          <span key={s} className={`rounded-md px-2 py-0.5 text-[10px] font-medium ${
-                            selectedSkills.includes(s) ? "bg-primary-light text-primary ring-1 ring-primary/20" : "bg-muted text-muted-foreground"
+                          <span key={s} className={`rounded-md px-2 py-0.5 text-[10px] font-medium transition-all duration-300 ${
+                            selectedSkills.includes(s) ? "tag-glow-primary text-primary ring-1 ring-primary/20" : "bg-muted text-muted-foreground"
                           }`}>{s}</span>
                         ))}
                         {c.interests.map(i => (
-                          <span key={i} className={`rounded-md px-2 py-0.5 text-[10px] font-medium ${
-                            selectedInterests.includes(i) ? "bg-accent-light text-accent ring-1 ring-accent/20" : "bg-muted text-muted-foreground"
+                          <span key={i} className={`rounded-md px-2 py-0.5 text-[10px] font-medium transition-all duration-300 ${
+                            selectedInterests.includes(i) ? "tag-glow-accent text-accent ring-1 ring-accent/20" : "bg-muted text-muted-foreground"
                           }`}>{i}</span>
                         ))}
                       </div>
@@ -320,7 +352,7 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
                       {/* Actions */}
                       <div className="mt-4 flex items-center gap-2">
                         {c.invited ? (
-                          <div className="flex items-center gap-2 text-sm font-medium text-success">
+                          <div className="flex items-center gap-2 text-sm font-medium text-success animate-[card-reveal_0.4s_ease-out]">
                             <CheckCircle2 className="h-4 w-4" />
                             Invitación enviada al portal del alumno
                           </div>
@@ -328,11 +360,11 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
                           <>
                             <button
                               onClick={() => handleInvite(c.id)}
-                              className="flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                              className="btn-press flex items-center gap-1.5 rounded-lg bg-primary px-3.5 py-2 text-xs font-semibold text-primary-foreground shadow-sm shadow-primary/20 transition-all hover:shadow-md hover:bg-primary/90"
                             >
                               <Send className="h-3 w-3" /> Invitar al Proyecto
                             </button>
-                            <button className="flex items-center gap-1.5 rounded-lg border border-border px-3.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
+                            <button className="btn-press flex items-center gap-1.5 rounded-lg border border-border px-3.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
                               <Eye className="h-3 w-3" /> Ver Perfil
                             </button>
                           </>
@@ -346,19 +378,19 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
           </div>
 
           {/* Step 2: Confirmation */}
-          <div className={`transition-all duration-300 ${step === 2 ? "opacity-100" : "hidden opacity-0"}`}>
+          <div className={`transition-all duration-400 ${step === 2 ? "opacity-100" : "hidden opacity-0"}`}>
             <div className="flex flex-col items-center gap-6 p-8 py-16 text-center">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-light">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-success-light animate-[card-reveal_0.5s_ease-out]">
                 <CheckCircle2 className="h-8 w-8 text-success" />
               </div>
-              <div>
+              <div className="animate-[card-reveal_0.5s_ease-out_0.1s_both]">
                 <h3 className="text-lg font-bold text-foreground">¡Iniciativa lista para publicar!</h3>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {candidates.filter(c => c.invited).length} estudiante(s) recibirán tu invitación al instante
                 </p>
               </div>
 
-              <div className="w-full max-w-sm space-y-3 rounded-xl border border-border bg-muted/30 p-5 text-left">
+              <div className="w-full max-w-sm space-y-3 rounded-xl border border-border bg-muted/30 p-5 text-left animate-[card-reveal_0.5s_ease-out_0.2s_both]">
                 <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Resumen</p>
                 <div className="space-y-2 text-sm">
                   <div className="flex justify-between">
@@ -380,7 +412,7 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-2 rounded-lg bg-primary-light px-4 py-2 text-xs text-primary">
+              <div className="flex items-center gap-2 rounded-lg bg-primary-light px-4 py-2 text-xs text-primary animate-[card-reveal_0.5s_ease-out_0.3s_both]">
                 <Users className="h-4 w-4" />
                 Tu equipo interdisciplinario se notificará automáticamente
               </div>
@@ -394,7 +426,7 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
             {step > 0 ? (
               <button
                 onClick={() => setStep(s => s - 1)}
-                className="flex items-center gap-1.5 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
+                className="btn-press flex items-center gap-1.5 rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
               >
                 <ChevronLeft className="h-4 w-4" /> Atrás
               </button>
@@ -404,15 +436,15 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
               <button
                 onClick={handleSearch}
                 disabled={!isFormValid}
-                className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md transition-all hover:shadow-lg hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
+                className="group btn-press flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:shadow-primary/30 hover:bg-primary/90 disabled:opacity-40 disabled:cursor-not-allowed disabled:shadow-none"
               >
-                <Sparkles className="h-4 w-4" /> Buscar Talento (Smart Match)
+                <Sparkles className="h-4 w-4 sparkle-icon" /> Buscar Talento (Smart Match)
               </button>
             )}
             {step === 1 && !loading && (
               <button
                 onClick={() => setStep(2)}
-                className="flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md transition-all hover:shadow-lg hover:bg-primary/90"
+                className="btn-press flex items-center gap-2 rounded-xl bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:bg-primary/90"
               >
                 Continuar <ChevronRight className="h-4 w-4" />
               </button>
@@ -420,7 +452,7 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
             {step === 2 && (
               <button
                 onClick={handlePublish}
-                className="flex items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground shadow-md transition-all hover:shadow-lg hover:bg-success/90"
+                className="btn-press flex items-center gap-2 rounded-xl bg-success px-6 py-3 text-sm font-bold text-success-foreground shadow-md transition-all hover:shadow-lg hover:bg-success/90"
               >
                 <Rocket className="h-4 w-4" /> Publicar Iniciativa y Volver al Panel
               </button>
