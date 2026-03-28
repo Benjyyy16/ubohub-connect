@@ -1,8 +1,9 @@
 import {
   Sparkles, Heart, Zap, ShieldCheck, Award, Clock, ArrowRight, Star,
-  Code, Palette, BookOpen, Beaker, Globe, Lightbulb, Leaf, Monitor
+  Code, Palette, BookOpen, Beaker, Globe, Lightbulb, Leaf, Monitor, ExternalLink
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import { Link } from "react-router-dom";
 
 const SKILLS = ["React", "Python", "UX Research", "Figma", "SQL"];
 const INTERESTS = ["EdTech", "Sustentabilidad", "IA Educativa", "Inclusión"];
@@ -110,10 +111,18 @@ const StudentView = () => {
               className="h-full w-full object-cover"
             />
           </div>
-          <div className="flex-1 space-y-3">
-            <div>
-              <h2 className="text-xl font-bold text-foreground">María González Soto</h2>
-              <p className="text-sm text-muted-foreground">Ingeniería en Informática · 4to año</p>
+            <div className="flex-1 space-y-3">
+            <div className="flex items-center justify-between">
+              <div>
+                <h2 className="text-xl font-bold text-foreground">María González Soto</h2>
+                <p className="text-sm text-muted-foreground">Ingeniería en Informática · 4to año</p>
+              </div>
+              <Link
+                to="/perfil"
+                className="btn-press flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              >
+                <ExternalLink className="h-3 w-3" /> Ver perfil público
+              </Link>
             </div>
             <div className="space-y-2">
               <div className="flex flex-wrap gap-1.5">
