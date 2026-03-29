@@ -283,8 +283,24 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
                 />
               </div>
 
+              {/* Bidirectional Rating */}
+              <div className="space-y-3 rounded-lg border border-border bg-surface p-4">
+                <p className="text-[11px] font-medium text-muted-foreground">Evaluación de Cierre (Feedback 360)</p>
+                <StarRating
+                  label="Compromiso del alumno"
+                  helpText="Solo visible para el algoritmo y administradores"
+                  value={commitmentRating}
+                  onChange={setCommitmentRating}
+                />
+                <StarRating
+                  label="Claridad del líder del proyecto"
+                  helpText="Estas métricas alimentan nuestro algoritmo de Smart Match para mejorar futuras conexiones."
+                  value={clarityRating}
+                  onChange={setClarityRating}
+                />
+              </div>
+
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Insignia a emitir</label>
                 <div className="flex items-center gap-4 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-4 ring-1 ring-primary/10">
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/25">
                     <Award className="h-7 w-7 text-primary-foreground" />
