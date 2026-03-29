@@ -54,6 +54,8 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
         setFeedback("");
         setProcessingIdx(0);
         setShowConfetti(false);
+        setCommitmentRating(0);
+        setClarityRating(0);
       }, 300);
       return () => clearTimeout(t);
     }
