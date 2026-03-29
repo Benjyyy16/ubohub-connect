@@ -56,6 +56,33 @@ const colorMap = {
   success: { bg: "bg-success-light", text: "text-success", icon: "text-success" },
 };
 
+const KpiCard = ({ kpi, index, mounted }: { kpi: typeof KPIS[0], index: number, mounted: boolean }) => {
+  const value = useCountUp(kpi.value, 1400, mounted);
+  const c = colorMap[kpi.color];
+
+  return (
+    <div
+      className={`card-magnetic rounded-xl border border-border bg-card p-5 shadow-sm stagger-${index + 1}`}
+    >
+      <div className="flex items-center justify-between">
+        <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${c.bg}`}>
+          <kpi.icon className={`h-5 w-5 ${c.icon}`} />
+        </div>
+        <span className={`flex items-center gap-0.5 text-[11px] font-semibold ${kpi.deltaColor}`}>
+          <ArrowUpRight className="h-3 w-3" />
+          {kpi.delta}
+        </span>
+      </div>
+      <div className="mt-3">
+        <p className="text-2xl font-extrabold tracking-tight text-foreground">
+          {kpi.prefix}{value.toLocaleString("es-CL")}{kpi.suffix}
+        </p>
+        <p className="mt-0.5 text-[11px] font-medium text-muted-foreground">{kpi.label}</p>
+      </div>
+    </div>
+  );
+};
+
 const AdminView = () => {
   const [mounted, setMounted] = useState(false);
   const [barsVisible, setBarsVisible] = useState(false);
@@ -65,8 +92,6 @@ const AdminView = () => {
     const t = setTimeout(() => setBarsVisible(true), 400);
     return () => clearTimeout(t);
   }, []);
-
-  const kpiValues = KPIS.map(k => useCountUp(k.value, 1400, mounted));
 
   return (
     <div className="space-y-8">
@@ -87,31 +112,9 @@ const AdminView = () => {
       {/* KPI Cards */}
       <section>
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {KPIS.map((kpi, idx) => {
-            const c = colorMap[kpi.color];
-            return (
-              <div
-                key={kpi.label}
-                className={`card-magnetic rounded-xl border border-border bg-card p-5 shadow-sm stagger-${idx + 1}`}
-              >
-                <div className="flex items-center justify-between">
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${c.bg}`}>
-                    <kpi.icon className={`h-5 w-5 ${c.icon}`} />
-                  </div>
-                  <span className={`flex items-center gap-0.5 text-[11px] font-semibold ${kpi.deltaColor}`}>
-                    <ArrowUpRight className="h-3 w-3" />
-                    {kpi.delta}
-                  </span>
-                </div>
-                <div className="mt-3">
-                  <p className="text-2xl font-extrabold tracking-tight text-foreground">
-                    {kpi.prefix}{kpiValues[idx].toLocaleString("es-CL")}{kpi.suffix}
-                  </p>
-                  <p className="mt-0.5 text-[11px] font-medium text-muted-foreground">{kpi.label}</p>
-                </div>
-              </div>
-            );
-          })}
+          {KPIS.map((kpi, idx) => (
+            <KpiCard key={kpi.label} kpi={kpi} index={idx} mounted={mounted} />
+          ))}
         </div>
       </section>
 
