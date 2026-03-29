@@ -406,8 +406,8 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
                 </div>
 
                 <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-5 text-center shadow-sm">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50">
-                    <FileText className="h-6 w-6 text-red-500" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10">
+                    <FileText className="h-6 w-6 text-destructive" />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-foreground">Resolución Oficial</p>
