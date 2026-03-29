@@ -4,6 +4,8 @@ import {
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import NewInitiativePanel from "./NewInitiativePanel";
 import ProjectClosureModal from "./ProjectClosureModal";
 
@@ -60,9 +62,19 @@ const PENDING_CERTS = [
 ];
 
 const ProfessorView = () => {
+  const navigate = useNavigate();
   const [selectedProject, setSelectedProject] = useState(1);
   const [showNewInitiative, setShowNewInitiative] = useState(false);
   const [closureStudent, setClosureStudent] = useState<typeof PENDING_CERTS[number] | null>(null);
+  const [invitingId, setInvitingId] = useState<number | null>(null);
+
+  const handleInvite = (id: number, name: string) => {
+    setInvitingId(id);
+    setTimeout(() => {
+      setInvitingId(null);
+      toast.success(`Invitación enviada a ${name}`);
+    }, 1000);
+  };
 
   return (
     <div className="space-y-8">
@@ -90,8 +102,8 @@ const ProfessorView = () => {
           {INITIATIVES.map((init, idx) => (
             <div
               key={init.id}
-              onClick={() => setSelectedProject(init.id)}
-              className={`card-magnetic cursor-pointer rounded-xl border bg-card p-5 shadow-sm stagger-${idx + 1} ${
+              onClick={() => navigate("/workspace")}
+              className={`card-magnetic cursor-pointer rounded-xl border bg-card p-5 shadow-sm hover:border-primary/50 transition-all stagger-${idx + 1} ${
                 selectedProject === init.id ? "border-primary ring-1 ring-primary/20" : "border-border"
               }`}
             >
@@ -178,8 +190,13 @@ const ProfessorView = () => {
                       </span>
                     </td>
                     <td className="px-5 py-3.5 text-center">
-                      <button className="btn-press inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
-                        <UserPlus className="h-3 w-3" /> Invitar
+                      <button 
+                        onClick={() => handleInvite(c.id, c.name)}
+                        disabled={invitingId === c.id}
+                        className="btn-press inline-flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90 disabled:opacity-50"
+                      >
+                        <UserPlus className="h-3 w-3" /> 
+                        {invitingId === c.id ? "Enviando..." : "Invitar"}
                       </button>
                     </td>
                   </tr>

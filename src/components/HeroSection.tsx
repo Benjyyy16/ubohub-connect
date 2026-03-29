@@ -34,11 +34,11 @@ const HeroSection = ({ onStudentLogin, onDemo }: HeroProps) => {
 
         {/* CTAs */}
         <div className="animate-fade-up-delay-3 flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
-          <Button variant="cta-primary" size="lg" onClick={onStudentLogin} className="gap-2 text-base px-7 h-12">
-            Ingresar como Estudiante <ArrowRight className="!size-4" />
+          <Button variant="cta-primary" size="lg" onClick={onDemo} className="gap-2 text-base px-7 h-12">
+            Agendar Llamada de Ventas <ArrowRight className="!size-4" />
           </Button>
-          <Button variant="cta-outline" size="lg" onClick={onDemo} className="text-base px-7 h-12">
-            Demo para Universidades
+          <Button variant="cta-outline" size="lg" onClick={onStudentLogin} className="text-base px-7 h-12">
+            Crear Cuenta de Estudiante
           </Button>
         </div>
 

@@ -4,7 +4,7 @@ import {
   Code, Palette, BookOpen, Beaker, Globe, Lightbulb, Leaf, Monitor, ExternalLink
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Tooltip, TooltipContent, TooltipTrigger,
 } from "@/components/ui/tooltip";
@@ -239,6 +239,7 @@ const MatchCircle = ({ value }: { value: number }) => {
 };
 
 const StudentView = () => {
+  const navigate = useNavigate();
   return (
     <div className="space-y-8">
       {/* Profile Header */}
@@ -320,8 +321,11 @@ const StudentView = () => {
                     </span>
                   ))}
                 </div>
-                <button className="btn-press flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
-                  <Zap className="h-3 w-3" /> Postular con 1 clic
+                <button 
+                  onClick={() => navigate("/workspace")}
+                  className="btn-press flex items-center gap-1 rounded-lg bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+                >
+                  <Zap className="h-3 w-3" /> Ver Workspace
                 </button>
               </div>
             </div>

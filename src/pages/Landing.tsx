@@ -3,22 +3,27 @@ import LandingNavbar from "@/components/LandingNavbar";
 import HeroSection from "@/components/HeroSection";
 import LogoMarquee from "@/components/LogoMarquee";
 import AuthModal from "@/components/AuthModal";
+import PricingSection from "@/components/PricingSection";
+import { useNavigate } from "react-router-dom";
 
 const Landing = () => {
   const [modalOpen, setModalOpen] = useState(false);
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-background">
       <LandingNavbar
-        onLogin={() => setModalOpen(true)}
-        onStart={() => setModalOpen(true)}
+        onLogin={() => { setAuthMode('login'); setModalOpen(true); }}
+        onStart={() => { setAuthMode('register'); setModalOpen(true); }}
       />
       <HeroSection
-        onStudentLogin={() => setModalOpen(true)}
-        onDemo={() => {}}
+        onStudentLogin={() => { setAuthMode('register'); setModalOpen(true); }}
+        onDemo={() => navigate('/agendar')}
       />
       <LogoMarquee />
-      <AuthModal open={modalOpen} onClose={() => setModalOpen(false)} />
+      <PricingSection />
+      <AuthModal open={modalOpen} onClose={() => setModalOpen(false)} initialMode={authMode} />
     </div>
   );
 };

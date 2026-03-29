@@ -6,11 +6,25 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import Landing from "./pages/Landing.tsx";
 import Index from "./pages/Index.tsx";
 import PublicProfile from "./pages/PublicProfile.tsx";
+import BusinessPortal from "./pages/BusinessPortal.tsx";
+import ProjectWorkspace from "./components/dashboard/ProjectWorkspace.tsx";
+import Showcase from "./pages/Showcase.tsx";
+import SuperAdminCenter from "./pages/SuperAdminCenter.tsx";
 import NotFound from "./pages/NotFound.tsx";
+import StudentOnboarding from "./pages/StudentOnboarding.tsx";
+import TenantSettings from "./pages/TenantSettings.tsx";
+import ProjectCreationWizard from "./pages/ProjectCreationWizard.tsx";
+import Soluciones from "./pages/Soluciones.tsx";
+import Casos from "./pages/Casos.tsx";
+import Configuracion from "./pages/Configuracion.tsx";
+import Mensajes from "./pages/Mensajes.tsx";
+import Directorio from "./pages/Directorio.tsx";
+import AgendarCall from "./pages/AgendarCall.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 const queryClient = new QueryClient();
 
-const App = () => (
+const AppContent = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       <Toaster />
@@ -20,12 +34,34 @@ const App = () => (
           <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Index />} />
           <Route path="/perfil" element={<PublicProfile />} />
+          <Route path="/business" element={<BusinessPortal />} />
+          <Route path="/workspace" element={<ProjectWorkspace />} />
+          <Route path="/showcase" element={<Showcase />} />
+          <Route path="/super-admin-command-center" element={<SuperAdminCenter />} />
+          <Route path="/onboarding" element={<StudentOnboarding />} />
+          <Route path="/tenant-settings" element={<TenantSettings />} />
+          <Route path="/wizard" element={<ProjectCreationWizard />} />
+          
+          {/* Nuevas Vistas y Vistas Autónomas */}
+          <Route path="/soluciones" element={<Soluciones />} />
+          <Route path="/casos" element={<Casos />} />
+          <Route path="/configuracion" element={<Configuracion />} />
+          <Route path="/mensajes" element={<Mensajes />} />
+          <Route path="/directorio" element={<Directorio />} />
+          <Route path="/agendar" element={<AgendarCall />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
+);
+
+const App = () => (
+  <AuthProvider>
+    <AppContent />
+  </AuthProvider>
 );
 
 export default App;
