@@ -378,9 +378,9 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
           <div className={`transition-all duration-400 ${step === 2 ? "block" : "hidden"}`}>
             <div className="flex flex-col items-center gap-6 px-6 py-10">
               <div className="relative">
-                <div className="absolute inset-0 animate-ping rounded-full bg-emerald-500/20" style={{ animationDuration: '2s' }} />
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30 animate-[card-reveal_0.5s_ease-out]">
-                  <CheckCircle2 className="h-8 w-8 text-white" />
+                <div className="absolute inset-0 animate-ping rounded-full bg-success/20" style={{ animationDuration: '2s' }} />
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-success shadow-lg shadow-success/30 animate-[card-reveal_0.5s_ease-out]">
+                  <CheckCircle2 className="h-8 w-8 text-success-foreground" />
                 </div>
               </div>
 
@@ -400,7 +400,7 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
                       Enviada a la Billetera de {student.name.split(" ")[0]}
                     </p>
                   </div>
-                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+                  <span className="flex items-center gap-1 rounded-full bg-success-light px-2 py-0.5 text-[10px] font-semibold text-success">
                     <CheckCircle2 className="h-3 w-3" /> Entregada
                   </span>
                 </div>
