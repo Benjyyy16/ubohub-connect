@@ -269,7 +269,7 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold text-emerald-600">{student.hours}/{student.hours} hrs</p>
+                  <p className="text-sm font-bold text-success">{student.hours}/{student.hours} hrs</p>
                   <Progress value={100} className="mt-1 h-1.5 w-20" />
                 </div>
               </div>
