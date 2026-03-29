@@ -4,6 +4,7 @@ import {
   Download, User, GraduationCap, Sparkles
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import StarRating from "./StarRating";
 
 interface CertStudent {
   id: number;
@@ -43,6 +44,8 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
   const [feedback, setFeedback] = useState("");
   const [processingIdx, setProcessingIdx] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [commitmentRating, setCommitmentRating] = useState(0);
+  const [clarityRating, setClarityRating] = useState(0);
 
   useEffect(() => {
     if (!open) {
@@ -51,6 +54,8 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
         setFeedback("");
         setProcessingIdx(0);
         setShowConfetti(false);
+        setCommitmentRating(0);
+        setClarityRating(0);
       }, 300);
       return () => clearTimeout(t);
     }
@@ -264,7 +269,7 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
                   </p>
                 </div>
                 <div className="text-right">
-                  <p className="text-sm font-bold text-emerald-600">{student.hours}/{student.hours} hrs</p>
+                  <p className="text-sm font-bold text-success">{student.hours}/{student.hours} hrs</p>
                   <Progress value={100} className="mt-1 h-1.5 w-20" />
                 </div>
               </div>
@@ -280,8 +285,24 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
                 />
               </div>
 
+              {/* Bidirectional Rating */}
+              <div className="space-y-3 rounded-lg border border-border bg-surface p-4">
+                <p className="text-[11px] font-medium text-muted-foreground">Evaluación de Cierre (Feedback 360)</p>
+                <StarRating
+                  label="Compromiso del alumno"
+                  helpText="Solo visible para el algoritmo y administradores"
+                  value={commitmentRating}
+                  onChange={setCommitmentRating}
+                />
+                <StarRating
+                  label="Claridad del líder del proyecto"
+                  helpText="Estas métricas alimentan nuestro algoritmo de Smart Match para mejorar futuras conexiones."
+                  value={clarityRating}
+                  onChange={setClarityRating}
+                />
+              </div>
+
               <div className="space-y-2">
-                <label className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Insignia a emitir</label>
                 <div className="flex items-center gap-4 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-4 ring-1 ring-primary/10">
                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/25">
                     <Award className="h-7 w-7 text-primary-foreground" />
@@ -357,9 +378,9 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
           <div className={`transition-all duration-400 ${step === 2 ? "block" : "hidden"}`}>
             <div className="flex flex-col items-center gap-6 px-6 py-10">
               <div className="relative">
-                <div className="absolute inset-0 animate-ping rounded-full bg-emerald-500/20" style={{ animationDuration: '2s' }} />
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-emerald-500 shadow-lg shadow-emerald-500/30 animate-[card-reveal_0.5s_ease-out]">
-                  <CheckCircle2 className="h-8 w-8 text-white" />
+                <div className="absolute inset-0 animate-ping rounded-full bg-success/20" style={{ animationDuration: '2s' }} />
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-success shadow-lg shadow-success/30 animate-[card-reveal_0.5s_ease-out]">
+                  <CheckCircle2 className="h-8 w-8 text-success-foreground" />
                 </div>
               </div>
 
@@ -379,14 +400,14 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
                       Enviada a la Billetera de {student.name.split(" ")[0]}
                     </p>
                   </div>
-                  <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-semibold text-emerald-600">
+                  <span className="flex items-center gap-1 rounded-full bg-success-light px-2 py-0.5 text-[10px] font-semibold text-success">
                     <CheckCircle2 className="h-3 w-3" /> Entregada
                   </span>
                 </div>
 
                 <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-5 text-center shadow-sm">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-red-50">
-                    <FileText className="h-6 w-6 text-red-500" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10">
+                    <FileText className="h-6 w-6 text-destructive" />
                   </div>
                   <div>
                     <p className="text-xs font-bold text-foreground">Resolución Oficial</p>
