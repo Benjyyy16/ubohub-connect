@@ -4,6 +4,7 @@ import {
   Download, User, GraduationCap, Sparkles
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
+import StarRating from "./StarRating";
 
 interface CertStudent {
   id: number;
@@ -43,6 +44,8 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
   const [feedback, setFeedback] = useState("");
   const [processingIdx, setProcessingIdx] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [commitmentRating, setCommitmentRating] = useState(0);
+  const [clarityRating, setClarityRating] = useState(0);
 
   useEffect(() => {
     if (!open) {
