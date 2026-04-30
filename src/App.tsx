@@ -20,6 +20,7 @@ import Configuracion from "./pages/Configuracion.tsx";
 import Mensajes from "./pages/Mensajes.tsx";
 import Directorio from "./pages/Directorio.tsx";
 import AgendarCall from "./pages/AgendarCall.tsx";
+import SkillBites from "./pages/SkillBites.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 
 const queryClient = new QueryClient();
@@ -49,6 +50,7 @@ const AppContent = () => (
           <Route path="/mensajes" element={<Mensajes />} />
           <Route path="/directorio" element={<Directorio />} />
           <Route path="/agendar" element={<AgendarCall />} />
+          <Route path="/skill-bites" element={<SkillBites />} />
 
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
