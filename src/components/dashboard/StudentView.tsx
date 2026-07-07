@@ -1,218 +1,253 @@
-import { useState } from "react";
-import {
-  Sparkles, Heart, Zap, ShieldCheck, Award, Clock, Star,
-  Code, Palette, BookOpen, Beaker, Globe, Lightbulb, Leaf, Monitor, ExternalLink, Lock
-} from "lucide-react";
+import { Award, CalendarDays, CheckCircle2, Eye, GraduationCap, LogIn, Send, Sparkles, UserRound } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
-import { Link } from "react-router-dom";
-import {
-  Tooltip, TooltipContent, TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { applications, badges, projects, studentProfile } from "@/data/ubohub";
 
-const SKILLS = ["React", "Python", "UX Research", "Figma", "SQL"];
-const INTERESTS = ["EdTech", "Sustentabilidad", "IA Educativa", "Inclusión"];
+const glassPanel = "rounded-3xl border border-white/70 bg-white/65 shadow-[0_24px_80px_-40px_rgba(30,79,149,0.45)] backdrop-blur-xl";
+const softChip = "rounded-full border border-white/70 bg-white/70 px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm";
 
-const OPPORTUNITIES = [
-  { id: 1, title: "App Educativa para Escuelas Rurales", professor: "Dra. Carmen López", faculty: "Pedagogía", match: 95, tags: ["Match por Interés", "Interdisciplinario"], skills: ["React", "UX Research"], icon: Monitor },
-  { id: 2, title: "Dashboard de Monitoreo Ambiental IoT", professor: "Dr. Andrés Muñoz", faculty: "Ing. Ambiental", match: 88, tags: ["Interdisciplinario"], skills: ["Python", "SQL"], icon: Leaf },
-  { id: 3, title: "Plataforma de Tutorías con IA", professor: "Dr. Felipe Herrera", faculty: "Informática", match: 82, tags: ["Match por Interés"], skills: ["React", "Python"], icon: Lightbulb },
-  { id: 4, title: "Gamificación de Aprendizaje de Ciencias", professor: "Dra. Isabel Torres", faculty: "Educación", match: 78, tags: [], skills: ["Figma", "UX Research"], icon: Star },
-];
-
-const CREDENTIALS = [
-  { id: 1, title: "Análisis de Datos", context: "Lab. Física — Proyecto Sismología", faculty: "Facultad de Ciencias", date: "28/03/2026", hours: 120, icon: Beaker, color: "primary" as const },
-  { id: 2, title: "Desarrollo Frontend", context: "Depto. Informática — Portal Estudiantil", faculty: "Facultad de Ingeniería", date: "15/02/2026", hours: 80, icon: Code, color: "accent" as const },
-  { id: 3, title: "Diseño UX/UI", context: "Lab. Innovación — App Salud Mental", faculty: "Facultad de Diseño", date: "10/01/2026", hours: 60, icon: Palette, color: "success" as const },
-  { id: 4, title: "Python Interdisciplinario", context: "Fac. Ciencias — Prof. Ramírez", faculty: "Facultad de Ciencias", date: "28/03/2026", hours: 90, icon: Globe, color: "primary" as const, isNew: true },
-  { id: 5, title: "Gestión Ágil de Proyectos", context: "Vicerrectoría de Innovación", faculty: "Institucional", date: "20/12/2025", hours: 40, icon: BookOpen, color: "accent" as const },
-];
-
-const colorMap = {
-  primary: { stroke: "hsl(var(--primary))", fill: "hsl(var(--primary-light))", text: "text-primary", icon: "text-primary" },
-  accent: { stroke: "hsl(var(--accent))", fill: "hsl(var(--accent-light))", text: "text-accent", icon: "text-accent" },
-  success: { stroke: "hsl(var(--success))", fill: "hsl(var(--success-light))", text: "text-success", icon: "text-success" },
+const statusLabel = {
+  enviada: "Enviada",
+  en_revision: "En revisión",
+  aceptada: "Aceptada",
+  rechazada: "Rechazada",
 };
 
-const SECURITY_BADGES = [
-  { icon: Lock, text: "Procesamiento OCR Efímero" },
-  { icon: ShieldCheck, text: "Cumplimiento GDPR/Ley de Datos" },
-  { icon: Lock, text: "Cifrado End-to-End" },
-];
-
-const HexBadge = ({ cred }: { cred: typeof CREDENTIALS[number] }) => {
-  const c = colorMap[cred.color];
-  const [hovered, setHovered] = useState(false);
-
-  return (
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <div
-          className="card-magnetic group flex flex-col items-center gap-2.5 rounded-lg border border-border bg-card p-4 cursor-pointer"
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-        >
-          <div className="relative flex h-16 w-16 items-center justify-center">
-            <svg viewBox="0 0 100 100" className="absolute inset-0 h-full w-full">
-              <polygon points="50,4 91,27 91,73 50,96 9,73 9,27" fill="none" stroke={c.stroke} strokeWidth="2.5" className="transition-all duration-300" />
-              <polygon points="50,10 86,30 86,70 50,90 14,70 14,30" fill={c.fill} className="transition-all duration-200" />
-            </svg>
-            <cred.icon className={`relative z-10 h-6 w-6 ${c.icon} transition-transform duration-200 ${hovered ? "scale-110" : ""}`} />
-            {"isNew" in cred && cred.isNew && (
-              <div className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary shadow-sm animate-pulse">
-                <Sparkles className="h-2.5 w-2.5 text-primary-foreground" />
-              </div>
-            )}
-          </div>
-          <div className="text-center">
-            <h4 className="text-xs font-semibold text-foreground">{cred.title}</h4>
-            <p className="mt-0.5 text-[10px] text-muted-foreground leading-tight">{cred.context}</p>
-          </div>
-          <div className="flex items-center gap-1.5">
-            <span className={`flex items-center gap-0.5 text-[10px] font-medium tabular-nums ${c.text}`}>
-              <Clock className="h-2.5 w-2.5" /> {cred.hours}h
-            </span>
-            <span className="flex items-center gap-0.5 text-[10px] text-muted-foreground">
-              <ShieldCheck className="h-2.5 w-2.5" /> Verificado
-            </span>
-          </div>
-        </div>
-      </TooltipTrigger>
-      <TooltipContent side="bottom" className="max-w-xs">
-        <div className="space-y-1">
-          <p className="text-xs font-semibold">{cred.title}</p>
-          <p className="text-[11px] text-muted-foreground">Emitido el {cred.date} · {cred.hours} Horas · {cred.faculty}</p>
-          <p className="flex items-center gap-1 text-[10px] text-primary font-medium">
-            <ShieldCheck className="h-3 w-3" /> Verificado por TalentLink
-          </p>
-        </div>
-      </TooltipContent>
-    </Tooltip>
-  );
+const statusClass = {
+  enviada: "bg-blue-50 text-blue-700 border-blue-100",
+  en_revision: "bg-amber-50 text-amber-700 border-amber-100",
+  aceptada: "bg-emerald-50 text-emerald-700 border-emerald-100",
+  rechazada: "bg-rose-50 text-rose-700 border-rose-100",
 };
 
-const MatchCircle = ({ value }: { value: number }) => {
-  const circumference = 2 * Math.PI * 18;
-  const offset = circumference - (value / 100) * circumference;
-  return (
-    <div className="relative flex h-12 w-12 shrink-0 items-center justify-center">
-      <svg className="h-12 w-12 -rotate-90" viewBox="0 0 40 40">
-        <circle cx="20" cy="20" r="18" fill="none" stroke="hsl(var(--border))" strokeWidth="2.5" />
-        <circle
-          cx="20" cy="20" r="18" fill="none"
-          stroke={value >= 90 ? "hsl(var(--success))" : value >= 80 ? "hsl(var(--primary))" : "hsl(var(--warning))"}
-          strokeWidth="2.5" strokeLinecap="round"
-          strokeDasharray={circumference} strokeDashoffset={offset}
-          className="transition-all duration-500"
-        />
-      </svg>
-      <span className="absolute text-[11px] font-bold tabular-nums text-foreground">{value}%</span>
-    </div>
-  );
-};
+const getProject = (projectId: string) => projects.find((project) => project.id === projectId);
+const studentApplications = applications.filter((application) => studentProfile.applications.includes(application.id));
+const recommendedProjects = studentProfile.recommendedProjects
+  .map((projectId) => projects.find((project) => project.id === projectId))
+  .filter(Boolean);
+const earnedBadges = badges.filter((badge) => studentProfile.badges.includes(badge.id));
+const averageMatch = Math.round(
+  recommendedProjects.reduce((sum, project) => sum + (project?.matchScore || 0), 0) / recommendedProjects.length,
+);
 
-const StudentView = () => {
+export default function StudentView() {
+  const navigate = useNavigate();
+
+  const handleApply = (title: string) => {
+    toast.success(`Postulación mock enviada a "${title}"`);
+  };
+
   return (
-    <div className="space-y-6">
-      {/* Profile Header */}
-      <div className="overflow-hidden rounded-lg border border-border bg-card p-5">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
-          <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg bg-muted ring-1 ring-border">
-            <img
-              src="https://api.dicebear.com/9.x/avataaars/svg?seed=Maria"
-              alt="Foto de perfil de María González"
-              className="h-full w-full object-cover"
-            />
-          </div>
-          <div className="flex-1 space-y-3">
-            <div className="flex items-start justify-between">
-              <div>
-                <h2 className="text-lg font-bold text-foreground">María González Soto</h2>
-                <p className="text-sm text-muted-foreground">Ingeniería en Informática · 4to año</p>
-              </div>
-              <Link
-                to="/perfil"
-                className="btn-press flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-              >
-                <ExternalLink className="h-3 w-3" /> Ver perfil público
-              </Link>
+    <div className="space-y-8">
+      <section className={`${glassPanel} overflow-hidden p-6 sm:p-8`}>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-start gap-5">
+            <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-gradient-to-br from-primary to-accent text-white shadow-lg shadow-primary/20">
+              <GraduationCap className="h-8 w-8" />
             </div>
-            <div className="space-y-2">
-              <div className="flex flex-wrap gap-1.5">
-                {SKILLS.map((s) => (
-                  <span key={s} className="rounded-md bg-muted px-2 py-0.5 text-[11px] font-medium text-muted-foreground">{s}</span>
-                ))}
+            <div>
+              <div className="mb-3 flex flex-wrap gap-2">
+                <span className={softChip}>
+                  <LogIn className="mr-1 inline h-3.5 w-3.5" />
+                  Ingreso con credenciales UBO
+                </span>
+                <span className={softChip}>Perfil {studentProfile.profileCompletion}% completo</span>
               </div>
-              <div className="flex flex-wrap items-center gap-1.5">
-                <Heart className="mr-0.5 h-3 w-3 text-primary" />
-                {INTERESTS.map((i) => (
-                  <span key={i} className="rounded-md bg-primary-light px-2 py-0.5 text-[11px] font-medium text-primary">{i}</span>
-                ))}
-              </div>
+              <h1 className="text-3xl font-extrabold tracking-tight text-slate-950">Hola, {studentProfile.name.split(" ")[0]}</h1>
+              <p className="mt-2 text-sm font-medium text-slate-600">
+                {studentProfile.career} · {studentProfile.year} · {studentProfile.faculty}
+              </p>
             </div>
-            {/* Security badges */}
-            <div className="flex flex-wrap items-center gap-3 pt-1">
-              {SECURITY_BADGES.map((b) => (
-                <span key={b.text} className="flex items-center gap-1 text-[10px] text-muted-foreground">
-                  <b.icon className="h-3 w-3" /> {b.text}
+          </div>
+          <button
+            onClick={() => navigate("/perfil")}
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-2xl bg-slate-950 px-5 text-sm font-bold text-white shadow-xl shadow-slate-900/15 transition hover:-translate-y-0.5"
+          >
+            <UserRound className="h-4 w-4" />
+            Completar perfil
+          </button>
+        </div>
+        <div className="mt-6">
+          <Progress value={studentProfile.profileCompletion} className="h-2.5 bg-white/70" />
+        </div>
+      </section>
+
+      <section className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {[
+          { label: "Proyectos recomendados", value: recommendedProjects.length, icon: Sparkles },
+          { label: "Postulaciones activas", value: studentApplications.filter((item) => item.status !== "rechazada").length, icon: Send },
+          { label: "Insignias obtenidas", value: earnedBadges.length, icon: Award },
+          { label: "Compatibilidad promedio", value: `${averageMatch}%`, icon: CheckCircle2 },
+        ].map((kpi) => (
+          <div key={kpi.label} className={`${glassPanel} p-5`}>
+            <div className="flex items-center justify-between">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-white text-primary shadow-sm">
+                <kpi.icon className="h-5 w-5" />
+              </div>
+              <span className="text-2xl font-extrabold text-slate-950">{kpi.value}</span>
+            </div>
+            <p className="mt-4 text-sm font-semibold text-slate-600">{kpi.label}</p>
+          </div>
+        ))}
+      </section>
+
+      <section className="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
+        <div className={`${glassPanel} p-6`}>
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-widest text-primary">Mi perfil</p>
+              <h2 className="mt-1 text-xl font-extrabold text-slate-950">Ficha académica</h2>
+            </div>
+            <span className={softChip}>{studentProfile.experienceLevel}</span>
+          </div>
+          <dl className="space-y-4 text-sm">
+            {[
+              ["Carrera", studentProfile.career],
+              ["Facultad", studentProfile.faculty],
+              ["Año", studentProfile.year],
+              ["Disponibilidad", studentProfile.availability],
+            ].map(([label, value]) => (
+              <div key={label} className="rounded-2xl bg-white/60 p-4">
+                <dt className="text-xs font-bold uppercase tracking-wide text-slate-400">{label}</dt>
+                <dd className="mt-1 font-semibold text-slate-800">{value}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="mt-5">
+            <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">Habilidades</p>
+            <div className="flex flex-wrap gap-2">
+              {studentProfile.skills.map((skill) => (
+                <span key={skill} className={softChip}>{skill}</span>
+              ))}
+            </div>
+          </div>
+          <div className="mt-5">
+            <p className="mb-2 text-xs font-bold uppercase tracking-wide text-slate-400">Intereses</p>
+            <div className="flex flex-wrap gap-2">
+              {studentProfile.interests.map((interest) => (
+                <span key={interest} className="rounded-full border border-teal-100 bg-teal-50/80 px-3 py-1 text-xs font-semibold text-teal-700">
+                  {interest}
                 </span>
               ))}
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Smart Match */}
-      <section>
-        <div className="mb-3 flex items-center gap-2">
-          <Sparkles className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-bold text-foreground">Oportunidades Recomendadas</h3>
-          <span className="rounded-md bg-primary-light px-1.5 py-0.5 text-[10px] font-semibold text-primary">Smart Match</span>
-        </div>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {OPPORTUNITIES.map((opp, idx) => (
-            <div key={opp.id} className={`group card-magnetic flex gap-3 rounded-lg border border-border bg-card p-4 stagger-${idx + 1}`}>
-              <MatchCircle value={opp.match} />
-              <div className="flex-1 space-y-2">
-                <div>
-                  <h4 className="text-sm font-semibold text-foreground leading-snug">{opp.title}</h4>
-                  <p className="text-[11px] text-muted-foreground">{opp.professor} · {opp.faculty}</p>
-                </div>
-                <div className="flex flex-wrap gap-1">
-                  {opp.tags.map((t) => (
-                    <span key={t} className={`rounded-md px-1.5 py-0.5 text-[10px] font-medium ${
-                      t.includes("Interés") ? "bg-primary-light text-primary" : "bg-success-light text-success"
-                    }`}>{t}</span>
-                  ))}
-                  {opp.skills.map((s) => (
-                    <span key={s} className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] text-muted-foreground">{s}</span>
-                  ))}
-                </div>
-                <button className="btn-press flex items-center gap-1 rounded-md bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground transition-colors hover:bg-primary/90">
-                  <Zap className="h-3 w-3" /> Postular con 1 clic
-                </button>
-              </div>
+        <div className={`${glassPanel} p-6`}>
+          <div className="mb-5 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-extrabold uppercase tracking-widest text-primary">Proyectos recomendados</p>
+              <h2 className="mt-1 text-xl font-extrabold text-slate-950">Smart Match UBOHub</h2>
             </div>
-          ))}
+            <span className={softChip}>Mínimo esperado 70%</span>
+          </div>
+          <div className="grid gap-4">
+            {recommendedProjects.map((project) => project && (
+              <article key={project.id} className="rounded-3xl border border-white/80 bg-white/70 p-5 shadow-sm">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div>
+                    <div className="mb-2 flex flex-wrap gap-2">
+                      <span className="rounded-full bg-primary-light px-3 py-1 text-xs font-bold text-primary">{project.faculty}</span>
+                      {project.interdisciplinary && <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700">Interdisciplinario</span>}
+                    </div>
+                    <h3 className="text-lg font-extrabold text-slate-950">{project.title}</h3>
+                    <p className="mt-1 text-sm font-medium text-slate-500">{project.professorName}</p>
+                    <p className="mt-3 text-sm leading-6 text-slate-600">{project.description}</p>
+                  </div>
+                  <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-3xl bg-emerald-50 text-xl font-extrabold text-emerald-700">
+                    {project.matchScore}%
+                  </div>
+                </div>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {project.requiredSkills.map((skill) => (
+                    <span key={skill} className={softChip}>{skill}</span>
+                  ))}
+                </div>
+                <div className="mt-5 grid gap-3 text-xs font-semibold text-slate-500 sm:grid-cols-3">
+                  <span>{project.availableSlots} cupos</span>
+                  <span>{project.modality} · {project.duration}</span>
+                  <span className="flex items-center gap-1"><CalendarDays className="h-3.5 w-3.5" /> {project.deadline}</span>
+                </div>
+                <div className="mt-5 flex flex-wrap gap-3">
+                  <button
+                    onClick={() => handleApply(project.title)}
+                    className="inline-flex h-10 items-center gap-2 rounded-2xl bg-primary px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5"
+                  >
+                    <Send className="h-4 w-4" />
+                    Postular
+                  </button>
+                  <button
+                    onClick={() => navigate("/workspace")}
+                    className="inline-flex h-10 items-center gap-2 rounded-2xl border border-white/80 bg-white/70 px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-white"
+                  >
+                    <Eye className="h-4 w-4" />
+                    Ver detalle
+                  </button>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
-      {/* Credentials Gallery */}
-      <section>
-        <div className="mb-3 flex items-center gap-2">
-          <Award className="h-4 w-4 text-primary" />
-          <h3 className="text-sm font-bold text-foreground">Galería de Insignias</h3>
-          <span className="rounded-md bg-muted px-1.5 py-0.5 text-[10px] font-medium text-muted-foreground">{CREDENTIALS.length} obtenidas</span>
+      <section className="grid gap-6 xl:grid-cols-2">
+        <div className={`${glassPanel} p-6`}>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-primary">Postulaciones</p>
+          <h2 className="mt-1 text-xl font-extrabold text-slate-950">Seguimiento activo</h2>
+          <div className="mt-5 space-y-3">
+            {studentApplications.map((application) => {
+              const project = getProject(application.projectId);
+              return (
+                <div key={application.id} className="rounded-3xl border border-white/80 bg-white/70 p-4">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <h3 className="font-bold text-slate-900">{project?.title}</h3>
+                      <p className="mt-1 text-xs font-medium text-slate-500">{application.note}</p>
+                    </div>
+                    <span className={`rounded-full border px-3 py-1 text-xs font-bold ${statusClass[application.status]}`}>
+                      {statusLabel[application.status]}
+                    </span>
+                  </div>
+                  <div className="mt-3 flex flex-wrap gap-3 text-xs font-semibold text-slate-500">
+                    <span>{application.submittedAt}</span>
+                    <span>{application.matchScore}% match</span>
+                    <span>Siguiente acción: revisar notificación UBOHub</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          {CREDENTIALS.map((cred, idx) => (
-            <div key={cred.id} className={`stagger-${Math.min(idx + 1, 4)}`}>
-              <HexBadge cred={cred} />
-            </div>
-          ))}
+
+        <div className={`${glassPanel} p-6`}>
+          <p className="text-xs font-extrabold uppercase tracking-widest text-primary">Insignias</p>
+          <h2 className="mt-1 text-xl font-extrabold text-slate-950">Credenciales verificables</h2>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2">
+            {earnedBadges.map((badge) => {
+              const project = getProject(badge.projectId);
+              return (
+                <div key={badge.id} className="rounded-3xl border border-white/80 bg-white/70 p-4">
+                  <div className="flex items-start gap-3">
+                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-primary-light text-primary">
+                      <Award className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-slate-900">{badge.name}</h3>
+                      <p className="mt-1 text-xs font-semibold text-slate-500">{badge.skill}</p>
+                    </div>
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <span className={softChip}>{badge.level}</span>
+                    <span className={softChip}>{badge.verified ? "Verificable" : "Pendiente"}</span>
+                  </div>
+                  <p className="mt-3 text-xs leading-5 text-slate-500">{project?.title} · {badge.issuedAt}</p>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
     </div>
   );
-};
-
-export default StudentView;
+}

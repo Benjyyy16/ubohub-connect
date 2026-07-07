@@ -176,7 +176,7 @@ const BadgeUnboxing = ({ open, onClose }: Props) => {
               ¡Felicidades, María! Has desbloqueado una nueva competencia verificada por tu institución.
             </p>
             <div className="mt-2 flex items-center justify-center gap-1 text-[10px] text-primary font-medium">
-              <ShieldCheck className="h-3 w-3" /> Verificado por TalentLink · 120 horas validadas
+              <ShieldCheck className="h-3 w-3" /> Verificado por UBOHub · 120 horas validadas
             </div>
           </div>
 

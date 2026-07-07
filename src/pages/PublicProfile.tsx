@@ -4,6 +4,7 @@ import {
   BarChart3, Globe, BookOpen, Link2, GraduationCap
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import TopBar from "@/components/dashboard/TopBar";
 
 const BADGES = [
   {
@@ -104,20 +105,7 @@ const PublicProfile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Back nav */}
-      <div className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-xl">
-        <div className="mx-auto flex h-12 max-w-4xl items-center justify-between px-6">
-          <button
-            onClick={() => navigate("/")}
-            className="btn-press flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-          >
-            <ArrowLeft className="h-4 w-4" /> Volver al Dashboard
-          </button>
-          <span className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Link2 className="h-3.5 w-3.5" /> talentlink.app/p/maria-gonzalez
-          </span>
-        </div>
-      </div>
+      <TopBar />
 
       <div className="mx-auto max-w-4xl px-6 pb-16">
         {/* Hero Section */}

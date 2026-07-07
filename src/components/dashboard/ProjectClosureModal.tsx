@@ -1,10 +1,9 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type SVGProps } from "react";
 import {
-  X, Award, FileCheck, CheckCircle2, Settings, Shield, FileText,
-  Download, User, GraduationCap, Sparkles
+  X, Award, FileCheck, CheckCircle2, Shield, FileText,
+  Download, User, GraduationCap, Sparkles, Star, Cpu
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
-import StarRating from "./StarRating";
 
 interface CertStudent {
   id: number;
@@ -21,10 +20,31 @@ interface Props {
 }
 
 const PROCESSING_STEPS = [
-  { icon: Settings, text: "Validando horas en el sistema...", spin: true },
-  { icon: Shield, text: "Acuñando Insignia Digital Verificada...", spin: false },
-  { icon: FileText, text: "Generando PDF de Resolución Oficial...", spin: false },
+  { icon: Cpu, text: "Analizando métricas del estudiante..." },
+  { icon: Shield, text: "Acuñando Insignia Digital Verificada..." },
+  { icon: FileSignatureIcon, text: "Firmando Resolución Oficial..." },
 ];
+
+function FileSignatureIcon(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M20 19.5v.5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8.5L18 5.5" />
+      <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+      <path d="M10.42 12.61a2.1 2.1 0 1 1 2.97 2.97L7.95 21 4 22l.99-3.95 5.43-5.44Z" />
+    </svg>
+  );
+}
 
 const ConfettiParticle = ({ delay, left }: { delay: number; left: number }) => (
   <div
@@ -39,171 +59,62 @@ const ConfettiParticle = ({ delay, left }: { delay: number; left: number }) => (
   />
 );
 
-const ProjectClosureModal = ({ open, onClose, student }: Props) => {
-  const [step, setStep] = useState(0);
-  const [feedback, setFeedback] = useState("");
+export default function ProjectClosureModal({ open, onClose, student }: Props) {
+  const [step, setStep] = useState<'review' | 'processing' | 'success'>('review');
+  const [rating, setRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
   const [processingIdx, setProcessingIdx] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [commitmentRating, setCommitmentRating] = useState(0);
-  const [clarityRating, setClarityRating] = useState(0);
+  const [progressVal, setProgressVal] = useState(0);
+
+  useEffect(() => {
+    if (open && step === 'review') {
+      const t = setTimeout(() => setProgressVal(100), 100);
+      return () => clearTimeout(t);
+    }
+  }, [open, step]);
 
   useEffect(() => {
     if (!open) {
       const t = setTimeout(() => {
-        setStep(0);
-        setFeedback("");
+        setStep('review');
+        setRating(0);
         setProcessingIdx(0);
         setShowConfetti(false);
-        setCommitmentRating(0);
-        setClarityRating(0);
+        setProgressVal(0);
       }, 300);
       return () => clearTimeout(t);
     }
   }, [open]);
 
   useEffect(() => {
-    if (step !== 1) return;
+    if (step !== 'processing') return;
     const timers: ReturnType<typeof setTimeout>[] = [];
-    timers.push(setTimeout(() => setProcessingIdx(1), 900));
-    timers.push(setTimeout(() => setProcessingIdx(2), 1800));
+    timers.push(setTimeout(() => setProcessingIdx(1), 1000));
+    timers.push(setTimeout(() => setProcessingIdx(2), 2500));
     timers.push(setTimeout(() => {
-      setStep(2);
+      setStep('success');
       setTimeout(() => setShowConfetti(true), 200);
-    }, 2800));
+    }, 4000));
     return () => timers.forEach(clearTimeout);
   }, [step]);
 
   const handleApprove = () => {
-    setStep(1);
+    setStep('processing');
     setProcessingIdx(0);
   };
 
   const handleDownloadPDF = useCallback(async () => {
     if (!student) return;
-
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF({ orientation: "portrait", unit: "mm", format: "letter" });
-
     const pageW = doc.internal.pageSize.getWidth();
-    const margin = 25;
-    const contentW = pageW - margin * 2;
-    let y = margin;
-
-    doc.setDrawColor(37, 99, 235);
-    doc.setLineWidth(1.2);
-    doc.line(margin, y, pageW - margin, y);
-    y += 12;
-
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(11);
-    doc.setTextColor(100, 100, 100);
-    doc.text("UNIVERSIDAD DEMO", pageW / 2, y, { align: "center" });
-    y += 6;
-    doc.setFontSize(9);
-    doc.setFont("helvetica", "normal");
-    doc.text("Vicerrectoría Académica · Dirección de Innovación Curricular", pageW / 2, y, { align: "center" });
-    y += 16;
-
     doc.setFont("helvetica", "bold");
     doc.setFontSize(18);
-    doc.setTextColor(30, 30, 30);
-    doc.text("RESOLUCIÓN DE LIBERACIÓN", pageW / 2, y, { align: "center" });
-    y += 7;
-    doc.setFontSize(12);
-    doc.setTextColor(37, 99, 235);
-    doc.text("DE HORAS DE PROYECTO", pageW / 2, y, { align: "center" });
-    y += 16;
-
-    doc.setDrawColor(220, 220, 220);
-    doc.setLineWidth(0.3);
-    doc.line(margin, y, pageW - margin, y);
-    y += 12;
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-    doc.setTextColor(50, 50, 50);
-
-    const lines = [
-      `Por medio del presente documento se certifica que:`,
-      "",
-      `${student.name}`,
-      `Carrera: ${student.career}`,
-      "",
-      `Ha completado satisfactoriamente un total de ${student.hours} horas`,
-      `de participación en el proyecto:`,
-      "",
-      `"${student.project}"`,
-      "",
-      `Las horas han sido validadas por el académico responsable y registradas`,
-      `oficialmente en el sistema institucional TalentLink.`,
-    ];
-
-    lines.forEach((line) => {
-      if (line === "") {
-        y += 5;
-      } else if (line === `${student.name}`) {
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(13);
-        doc.setTextColor(30, 30, 30);
-        doc.text(line, margin, y);
-        y += 7;
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(11);
-        doc.setTextColor(50, 50, 50);
-      } else if (line.startsWith('"')) {
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(37, 99, 235);
-        doc.text(line, margin, y);
-        y += 7;
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(50, 50, 50);
-      } else {
-        doc.text(line, margin, y);
-        y += 7;
-      }
-    });
-
-    if (feedback.trim()) {
-      y += 8;
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(10);
-      doc.setTextColor(80, 80, 80);
-      doc.text("Comentario del Académico:", margin, y);
-      y += 6;
-      doc.setFont("helvetica", "italic");
-      doc.setFontSize(10);
-      const feedbackLines = doc.splitTextToSize(`"${feedback}"`, contentW);
-      doc.text(feedbackLines, margin, y);
-      y += feedbackLines.length * 5 + 4;
-    }
-
-    y = Math.max(y + 20, 200);
-    doc.setDrawColor(180, 180, 180);
-    doc.setLineWidth(0.3);
-    doc.line(margin, y, margin + 65, y);
-    doc.line(pageW - margin - 65, y, pageW - margin, y);
-    y += 5;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(9);
-    doc.setTextColor(100, 100, 100);
-    doc.text("Firma Académico Responsable", margin, y);
-    doc.text("Sello Institucional", pageW - margin - 65, y);
-
-    y = doc.internal.pageSize.getHeight() - margin;
-    doc.setDrawColor(37, 99, 235);
-    doc.setLineWidth(0.5);
-    doc.line(margin, y - 8, pageW - margin, y - 8);
-    doc.setFontSize(8);
-    doc.setTextColor(150, 150, 150);
-    doc.text(
-      "Documento generado por TalentLink · Verificable digitalmente · " + new Date().toLocaleDateString("es-CL"),
-      pageW / 2,
-      y - 2,
-      { align: "center" }
-    );
-
-    doc.save(`Resolucion_${student.name.replace(/\s/g, "_")}.pdf`);
-  }, [student, feedback]);
+    doc.text("RESOLUCIÓN DE LIBERACIÓN", pageW / 2, 40, { align: "center" });
+    doc.text(student.name, 25, 60);
+    doc.save(`TalentLink_${student.name.replace(/\s/g, "_")}.pdf`);
+  }, [student]);
 
   if (!student) return null;
 
@@ -212,16 +123,16 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
       <style>{`
         @keyframes confetti-fall {
           0% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
-          100% { opacity: 0; transform: translateY(260px) rotate(720deg) scale(0.3); }
+          100% { opacity: 0; transform: translateY(300px) rotate(720deg) scale(0.3); }
         }
-        @keyframes card-reveal {
-          0% { opacity: 0; transform: translateY(10px) scale(0.95); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
+        @keyframes pulse-glow {
+          0%, 100% { box-shadow: 0 0 15px rgba(59, 130, 246, 0.2); }
+          50% { box-shadow: 0 0 40px rgba(59, 130, 246, 0.6); }
         }
       `}</style>
 
       <div
-        className={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-sm transition-opacity duration-300 ${
           open ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={onClose}
@@ -231,218 +142,174 @@ const ProjectClosureModal = ({ open, onClose, student }: Props) => {
         open ? "opacity-100" : "pointer-events-none opacity-0"
       }`}>
         <div
-          className={`relative w-full max-w-lg overflow-hidden rounded-2xl border border-border bg-card shadow-2xl transition-all duration-500 ${
+          className={`relative w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl transition-all duration-500 ${
             open ? "scale-100 opacity-100" : "scale-95 opacity-0"
           }`}
           onClick={(e) => e.stopPropagation()}
         >
           {showConfetti && (
             <div className="pointer-events-none absolute inset-x-0 top-0 h-full overflow-hidden">
-              {Array.from({ length: 24 }).map((_, i) => (
-                <ConfettiParticle key={i} delay={i * 0.06} left={4 + Math.random() * 92} />
+              {Array.from({ length: 30 }).map((_, i) => (
+                <ConfettiParticle key={i} delay={i * 0.05} left={2 + Math.random() * 96} />
               ))}
             </div>
           )}
 
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 z-10 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            className="absolute right-4 top-4 z-10 rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-900"
           >
-            <X className="h-4 w-4" />
+            <X className="h-5 w-5" />
           </button>
 
-          <div className={`transition-all duration-400 ${step === 0 ? "block" : "hidden"}`}>
-            <div className="border-b border-border bg-muted/30 px-6 py-4">
-              <h2 className="text-base font-bold text-foreground">Cierre de Iniciativa</h2>
-              <p className="text-xs text-muted-foreground">{student.project}</p>
-            </div>
-
-            <div className="space-y-5 p-6">
-              <div className="flex items-center gap-4 rounded-xl border border-border bg-muted/20 p-4">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
-                  <User className="h-6 w-6 text-primary" />
-                </div>
-                <div className="flex-1">
-                  <p className="font-semibold text-foreground">{student.name}</p>
-                  <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <GraduationCap className="h-3 w-3" /> {student.career}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-sm font-bold text-success">{student.hours}/{student.hours} hrs</p>
-                  <Progress value={100} className="mt-1 h-1.5 w-20" />
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-foreground">Comentario de desempeño (opcional)</label>
-                <textarea
-                  value={feedback}
-                  onChange={(e) => setFeedback(e.target.value)}
-                  placeholder={`Deja un comentario sobre el desempeño de ${student.name.split(" ")[0]} (visible en su perfil público)`}
-                  rows={3}
-                  className="w-full resize-none rounded-xl border border-border bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground/50 transition-all focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20"
-                />
-              </div>
-
-              {/* Bidirectional Rating */}
-              <div className="space-y-3 rounded-lg border border-border bg-surface p-4">
-                <p className="text-[11px] font-medium text-muted-foreground">Evaluación de Cierre (Feedback 360)</p>
-                <StarRating
-                  label="Compromiso del alumno"
-                  helpText="Solo visible para el algoritmo y administradores"
-                  value={commitmentRating}
-                  onChange={setCommitmentRating}
-                />
-                <StarRating
-                  label="Claridad del líder del proyecto"
-                  helpText="Estas métricas alimentan nuestro algoritmo de Smart Match para mejorar futuras conexiones."
-                  value={clarityRating}
-                  onChange={setClarityRating}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <div className="flex items-center gap-4 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-4 ring-1 ring-primary/10">
-                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-primary shadow-lg shadow-primary/25">
-                    <Award className="h-7 w-7 text-primary-foreground" />
+          {/* STEP 1: REVIEW */}
+          <div className={`transition-all duration-500 absolute w-full inset-0 ${step === 'review' ? 'opacity-100 visible relative' : 'opacity-0 invisible absolute'}`}>
+             <div className="px-6 py-6 pb-2 border-b border-slate-100">
+               <div className="flex items-center gap-4">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50">
+                    <User className="h-6 w-6 text-blue-600" />
                   </div>
                   <div>
-                    <p className="font-semibold text-foreground">Experto en {student.project.includes("Salud") ? "Desarrollo de Software" : "Diseño & UX"}</p>
-                    <p className="text-xs text-muted-foreground">Validado por {student.hours} horas de proyecto real</p>
-                    <p className="mt-0.5 flex items-center gap-1 text-[10px] text-primary font-medium">
-                      <Shield className="h-3 w-3" /> Credencial verificable institucionalmente
+                    <h2 className="text-xl font-bold text-slate-900">{student.name}</h2>
+                    <p className="flex items-center gap-1 text-sm text-slate-500">
+                      <GraduationCap className="h-4 w-4" /> {student.career}
                     </p>
                   </div>
-                </div>
-              </div>
-            </div>
+               </div>
+               <div className="mt-6 flex justify-between text-sm font-semibold text-slate-700">
+                 <span>Progreso del Proyecto</span>
+                 <span className="text-blue-600">{student.hours} / {student.hours} hrs</span>
+               </div>
+               <Progress value={progressVal} className="mt-2 h-2 w-full transition-all duration-1000 ease-out bg-slate-100" />
+             </div>
 
-            <div className="flex items-center justify-end gap-3 border-t border-border px-6 py-4">
-              <button
-                onClick={onClose}
-                className="rounded-lg border border-border px-4 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
-              >
-                Cancelar
-              </button>
-              <button
-                onClick={handleApprove}
-                className="flex items-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-sm font-bold text-primary-foreground shadow-md shadow-primary/20 transition-all hover:shadow-lg hover:bg-primary/90"
-              >
-                <FileCheck className="h-4 w-4" /> Aprobar y Emitir Documentos
-              </button>
-            </div>
+             <div className="p-6 space-y-6">
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-5 text-center">
+                   <h3 className="font-bold text-slate-900">Feedback Engine</h3>
+                   <p className="mt-1 text-xs text-slate-500">Evalúa el compromiso del estudiante. (Este dato es privado y calibra nuestro algoritmo de Smart Match).</p>
+                   
+                   <div className="mt-4 flex justify-center gap-2">
+                     {[1, 2, 3, 4, 5].map((star) => (
+                       <button
+                         key={star}
+                         onMouseEnter={() => setHoverRating(star)}
+                         onMouseLeave={() => setHoverRating(0)}
+                         onClick={() => setRating(star)}
+                         className="p-1 transition-transform hover:scale-110 focus:outline-none"
+                       >
+                         <Star 
+                           className={`h-8 w-8 transition-colors ${
+                             (hoverRating || rating) >= star 
+                             ? 'fill-amber-400 text-amber-400' 
+                             : 'fill-slate-200 text-slate-200'
+                           }`} 
+                         />
+                       </button>
+                     ))}
+                   </div>
+                </div>
+             </div>
+
+             <div className="flex items-center justify-end border-t border-slate-100 bg-slate-50/50 p-4">
+               <button
+                 disabled={rating === 0}
+                 onClick={handleApprove}
+                 className="flex items-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-sm shadow-blue-600/20 transition-all hover:bg-blue-700 hover:shadow-md hover:-translate-y-0.5 disabled:opacity-50 disabled:pointer-events-none"
+               >
+                 <FileCheck className="h-4 w-4" /> Confirmar y Proceder
+               </button>
+             </div>
           </div>
 
-          <div className={`transition-all duration-400 ${step === 1 ? "block" : "hidden"}`}>
-            <div className="flex flex-col items-center gap-8 px-6 py-16">
-              <div className="relative flex h-20 w-20 items-center justify-center">
-                <div className="absolute inset-0 rounded-full border-2 border-dashed border-primary/20 animate-[spin_6s_linear_infinite]" />
+          {/* STEP 2: PROCESSING ANIMATION */}
+          <div className={`transition-all duration-500 absolute w-full inset-0 bg-white flex flex-col items-center justify-center ${step === 'processing' ? 'opacity-100 visible relative' : 'opacity-0 invisible absolute scale-105'}`}>
+             <div className="relative flex h-32 w-32 items-center justify-center">
+                <div className="absolute inset-0 rounded-full border-4 border-dashed border-blue-500/20 animate-[spin_4s_linear_infinite]" />
+                
                 {PROCESSING_STEPS.map((ps, i) => (
                   <div
                     key={i}
-                    className={`absolute transition-all duration-500 ${
+                    className={`absolute flex transition-all duration-500 ${
                       processingIdx === i ? "scale-100 opacity-100" : "scale-50 opacity-0"
                     }`}
                   >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary shadow-lg shadow-primary/25">
-                      <ps.icon className={`h-7 w-7 text-primary-foreground ${ps.spin && processingIdx === i ? "animate-[spin_1.5s_linear_infinite]" : ""}`} />
+                    <div className="flex h-20 w-20 items-center justify-center rounded-[2rem] bg-blue-600 text-white animate-[pulse-glow_2s_ease-in-out_infinite]">
+                      <ps.icon className="h-10 w-10 animate-bounce" style={{ animationDuration: '2s' }} />
                     </div>
                   </div>
                 ))}
-              </div>
+             </div>
 
-              <div className="text-center">
-                {PROCESSING_STEPS.map((ps, i) => (
-                  <p
-                    key={i}
-                    className={`text-sm font-semibold text-foreground transition-all duration-300 ${
-                      processingIdx === i ? "block opacity-100" : "hidden opacity-0"
-                    }`}
-                  >
-                    {ps.text}
-                  </p>
-                ))}
-                <p className="mt-2 text-xs text-muted-foreground">Esto puede tomar unos segundos</p>
-              </div>
-
-              <div className="h-1 w-48 overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full rounded-full bg-primary transition-all duration-700 ease-out"
-                  style={{ width: `${((processingIdx + 1) / 3) * 100}%` }}
-                />
-              </div>
-            </div>
+             <div className="mt-8 text-center min-h-[60px]">
+               {PROCESSING_STEPS.map((ps, i) => (
+                 <p
+                   key={i}
+                   className={`text-base font-bold text-slate-800 transition-all duration-500 absolute w-full left-0 ${
+                     processingIdx === i ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                   }`}
+                 >
+                   {ps.text}
+                 </p>
+               ))}
+             </div>
+             <p className="mt-1 text-xs text-slate-400">Automatización burocrática en proceso...</p>
           </div>
 
-          <div className={`transition-all duration-400 ${step === 2 ? "block" : "hidden"}`}>
-            <div className="flex flex-col items-center gap-6 px-6 py-10">
-              <div className="relative">
-                <div className="absolute inset-0 animate-ping rounded-full bg-success/20" style={{ animationDuration: '2s' }} />
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-success shadow-lg shadow-success/30 animate-[card-reveal_0.5s_ease-out]">
-                  <CheckCircle2 className="h-8 w-8 text-success-foreground" />
-                </div>
-              </div>
+          {/* STEP 3: SUCCESS (GLASSMORPHISM) */}
+          <div className={`transition-all duration-700 bg-slate-50 absolute w-full inset-0 flex flex-col ${step === 'success' ? 'opacity-100 visible relative scale-100' : 'opacity-0 invisible absolute scale-95'}`}>
+             <div className="flex-1 p-8 text-center flex flex-col items-center justify-center">
+               <div className="inline-flex items-center justify-center rounded-full bg-emerald-100 p-3 mb-4">
+                 <CheckCircle2 className="h-8 w-8 text-emerald-600" />
+               </div>
+               <h3 className="text-2xl font-extrabold text-slate-900 tracking-tight">¡Aprobado con Éxito!</h3>
+               <p className="mt-2 text-sm text-slate-500 max-w-[280px]">El proceso ha finalizado. La documentación oficial se ha generado automáticamente.</p>
 
-              <div className="text-center animate-[card-reveal_0.5s_ease-out_0.1s_both]">
-                <h3 className="text-lg font-bold text-foreground">¡Proyecto Finalizado con Éxito!</h3>
-                <p className="mt-1 text-sm text-muted-foreground">Todos los documentos han sido generados</p>
-              </div>
+               <div className="mt-8 grid grid-cols-2 gap-4 w-full max-w-sm">
+                 {/* Card 1: Insignia Digital */}
+                 <div className="flex flex-col items-center gap-3 rounded-2xl border border-white bg-white/60 p-5 text-center shadow-xl shadow-slate-200/50 backdrop-blur-xl">
+                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 shadow-md shadow-blue-500/30">
+                     <Award className="h-7 w-7 text-white" />
+                   </div>
+                   <div>
+                     <p className="text-xs font-bold text-slate-900">Insignia Digital</p>
+                     <p className="mt-1 text-[10px] text-slate-500 leading-tight">
+                       Enviada al Perfil Público de {student.name.split(" ")[0]}
+                     </p>
+                   </div>
+                 </div>
 
-              <div className="grid w-full grid-cols-2 gap-3 animate-[card-reveal_0.5s_ease-out_0.2s_both]">
-                <div className="flex flex-col items-center gap-3 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/5 to-primary/10 p-5 text-center ring-1 ring-primary/10">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary shadow-md shadow-primary/25 transition-transform duration-500 hover:scale-110">
-                    <Award className="h-6 w-6 text-primary-foreground" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-foreground">Insignia Digital</p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground">
-                      Enviada a la Billetera de {student.name.split(" ")[0]}
-                    </p>
-                  </div>
-                  <span className="flex items-center gap-1 rounded-full bg-success-light px-2 py-0.5 text-[10px] font-semibold text-success">
-                    <CheckCircle2 className="h-3 w-3" /> Entregada
-                  </span>
-                </div>
+                 {/* Card 2: PDF Oficial */}
+                 <div className="flex flex-col items-center gap-3 rounded-2xl border border-white bg-white/60 p-5 text-center shadow-xl shadow-slate-200/50 backdrop-blur-xl">
+                   <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br from-rose-500 to-red-600 shadow-md shadow-rose-500/30">
+                     <FileText className="h-7 w-7 text-white" />
+                   </div>
+                   <div>
+                     <p className="text-xs font-bold text-slate-900">Resolución Oficial</p>
+                     <p className="mt-1 text-[10px] text-slate-500 leading-tight">
+                       Documento PDF de liberación institucional
+                     </p>
+                   </div>
+                 </div>
+               </div>
+             </div>
 
-                <div className="flex flex-col items-center gap-3 rounded-xl border border-border bg-card p-5 text-center shadow-sm">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-destructive/10">
-                    <FileText className="h-6 w-6 text-destructive" />
-                  </div>
-                  <div>
-                    <p className="text-xs font-bold text-foreground">Resolución Oficial</p>
-                    <p className="mt-0.5 text-[10px] text-muted-foreground">
-                      Liberación de {student.hours} hrs
-                    </p>
-                  </div>
-                  <button
-                    onClick={handleDownloadPDF}
-                    className="flex items-center gap-1.5 rounded-lg bg-primary px-3 py-1.5 text-[11px] font-semibold text-primary-foreground shadow-sm shadow-primary/20 transition-all hover:shadow-md"
-                  >
-                    <Download className="h-3 w-3" /> Descargar PDF
-                  </button>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1.5 rounded-lg bg-muted/50 px-3 py-1.5 text-[10px] text-muted-foreground animate-[card-reveal_0.5s_ease-out_0.35s_both]">
-                <Sparkles className="h-3 w-3 text-primary" />
-                Credencial verificable emitida a través de TalentLink
-              </div>
-            </div>
-
-            <div className="flex items-center justify-center gap-3 border-t border-border px-6 py-4 animate-[card-reveal_0.5s_ease-out_0.4s_both]">
-              <button
-                onClick={onClose}
-                className="flex items-center gap-2 rounded-xl border border-border px-5 py-2.5 text-sm font-medium text-muted-foreground transition-colors hover:bg-muted"
-              >
-                Volver al Panel
-              </button>
-            </div>
+             <div className="flex items-center justify-between gap-3 bg-white p-5 border-t border-slate-100 rounded-b-2xl">
+                <button
+                  onClick={onClose}
+                  className="rounded-xl px-5 py-2.5 text-sm font-semibold text-slate-600 transition-colors hover:bg-slate-100"
+                >
+                  Cerrar Panel
+                </button>
+                <button
+                  onClick={handleDownloadPDF}
+                  className="flex items-center gap-2 rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-bold text-white shadow-md transition-all hover:-translate-y-0.5 hover:shadow-lg hover:bg-slate-800"
+                >
+                  <Download className="h-4 w-4" /> Descargar Copia
+                </button>
+             </div>
           </div>
         </div>
       </div>
     </>
   );
-};
-
-export default ProjectClosureModal;
+}
