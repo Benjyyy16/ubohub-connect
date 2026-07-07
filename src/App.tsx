@@ -14,6 +14,8 @@ import NotFound from "./pages/NotFound.tsx";
 import StudentOnboarding from "./pages/StudentOnboarding.tsx";
 import TenantSettings from "./pages/TenantSettings.tsx";
 import ProjectCreationWizard from "./pages/ProjectCreationWizard.tsx";
+import Projects from "./pages/Projects.tsx";
+import ProjectDetail from "./pages/ProjectDetail.tsx";
 import Soluciones from "./pages/Soluciones.tsx";
 import Casos from "./pages/Casos.tsx";
 import Configuracion from "./pages/Configuracion.tsx";
@@ -34,6 +36,8 @@ const AppContent = () => (
         <Routes>
           <Route path="/" element={<Landing />} />
           <Route path="/dashboard" element={<Index />} />
+          <Route path="/proyectos" element={<Projects />} />
+          <Route path="/proyectos/:projectId" element={<ProjectDetail />} />
           <Route path="/perfil" element={<PublicProfile />} />
           <Route path="/business" element={<BusinessPortal />} />
           <Route path="/workspace" element={<ProjectWorkspace />} />

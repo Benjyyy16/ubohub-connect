@@ -1,73 +1,34 @@
-import { Search, MapPin, Building2, GraduationCap, ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Search, UserRound } from "lucide-react";
 import TopBar from "@/components/dashboard/TopBar";
-import { useState } from "react";
-import { toast } from "sonner";
+import { students } from "@/data/ubohub";
 
 export default function Directorio() {
-  const [query, setQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSearching(true);
-    setTimeout(() => {
-      setIsSearching(false);
-      toast.success("Resultados encontrados (simulación)");
-    }, 800);
-  };
-
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(191,219,254,0.75),transparent_34%),radial-gradient(circle_at_top_right,rgba(204,251,241,0.65),transparent_30%),linear-gradient(180deg,#f8fbff_0%,#eef5ff_48%,#f8fafc_100%)]">
       <TopBar />
-      <main className="flex-1 max-w-5xl mx-auto w-full p-6">
-        
-        <div className="text-center mb-10 mt-4">
-          <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-4">Directorio de Talento B2B</h1>
-          <p className="text-lg text-slate-500 max-w-2xl mx-auto">Encuentra estudiantes certificados, profesores investigadores y oportunidades corporativas en segundos.</p>
-        </div>
-
-        <form onSubmit={handleSearch} className="max-w-3xl mx-auto mb-12 relative flex items-center bg-white rounded-2xl shadow-lg border border-slate-200 p-2 focus-within:ring-2 focus-within:ring-blue-500 focus-within:border-blue-500 transition-all">
-          <Search className="h-6 w-6 text-slate-400 ml-4 mr-2" />
-          <input 
-            type="text" 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Buscar por habilidad, rol, universidad o empresa..."
-            className="flex-1 bg-transparent px-2 py-4 text-base font-medium outline-none text-slate-900 placeholder:text-slate-400"
-          />
-          <button type="submit" disabled={isSearching} className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-bold px-8 py-3.5 rounded-xl ml-2 shadow-sm transition-colors mr-1">
-            {isSearching ? <div className="h-5 w-5 border-2 border-white/30 border-t-white rounded-full animate-spin mx-3" /> : "Buscar"}
-          </button>
-        </form>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-            <div className="h-12 w-12 bg-blue-100 text-blue-600 rounded-xl flex items-center justify-center mb-6">
-              <GraduationCap className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-blue-600 transition-colors">Talento Estudiantil</h3>
-            <p className="text-sm text-slate-500 mb-4">Explora portafolios verificados de estudiantes listos para la inserción laboral.</p>
-            <div className="flex items-center text-sm font-bold text-blue-600">Ver perfiles <ChevronRight className="h-4 w-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" /></div>
+      <main className="mx-auto max-w-6xl space-y-6 px-5 py-8 sm:px-6">
+        <section className="rounded-3xl border border-white/70 bg-white/65 p-6 shadow-[0_24px_80px_-40px_rgba(30,79,149,0.45)] backdrop-blur-xl">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-950">Directorio académico UBOHub</h1>
+          <p className="mt-2 text-sm leading-6 text-slate-600">Explora perfiles mock de estudiantes disponibles para proyectos académicos.</p>
+          <div className="relative mt-5 max-w-md">
+            <Search className="absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" />
+            <input className="h-12 w-full rounded-2xl border border-white/80 bg-white/75 pl-11 pr-4 text-sm font-semibold outline-none" placeholder="Buscar por carrera, habilidad o interés" />
           </div>
-
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-            <div className="h-12 w-12 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center mb-6">
-              <Building2 className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-purple-600 transition-colors">Socios Corporativos</h3>
-            <p className="text-sm text-slate-500 mb-4">Empresas B2B buscando talento y publicando oportunidades exclusivas.</p>
-            <div className="flex items-center text-sm font-bold text-purple-600">Ver empresas <ChevronRight className="h-4 w-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" /></div>
-          </div>
-
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm hover:shadow-md transition-shadow cursor-pointer group">
-            <div className="h-12 w-12 bg-emerald-100 text-emerald-600 rounded-xl flex items-center justify-center mb-6">
-              <MapPin className="h-6 w-6" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900 mb-2 group-hover:text-emerald-600 transition-colors">Proyectos de Innovación</h3>
-            <p className="text-sm text-slate-500 mb-4">Iniciativas abiertas orquestadas por profesores e investigadores.</p>
-            <div className="flex items-center text-sm font-bold text-emerald-600">Ver proyectos <ChevronRight className="h-4 w-4 ml-1 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" /></div>
-          </div>
-        </div>
+        </section>
+        <section className="grid gap-4 md:grid-cols-2">
+          {students.map((student) => (
+            <article key={student.id} className="rounded-3xl border border-white/70 bg-white/65 p-5 shadow-[0_24px_80px_-40px_rgba(30,79,149,0.45)] backdrop-blur-xl">
+              <UserRound className="mb-4 h-6 w-6 text-primary" />
+              <h2 className="text-xl font-extrabold text-slate-950">{student.name}</h2>
+              <p className="mt-1 text-sm font-semibold text-slate-500">{student.career} · {student.year}</p>
+              <div className="mt-4 flex flex-wrap gap-2">
+                {student.skills.slice(0, 4).map((skill) => <span key={skill} className="rounded-full bg-white/75 px-3 py-1 text-xs font-semibold text-slate-600">{skill}</span>)}
+              </div>
+              <Link to="/perfil" className="mt-5 inline-flex h-10 items-center rounded-2xl bg-primary px-4 text-sm font-bold text-white">Ver perfil</Link>
+            </article>
+          ))}
+        </section>
       </main>
     </div>
   );

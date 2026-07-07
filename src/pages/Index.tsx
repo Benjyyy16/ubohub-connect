@@ -21,7 +21,7 @@ const Index = () => {
   if (!currentUser) return null;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(191,219,254,0.75),transparent_34%),radial-gradient(circle_at_top_right,rgba(204,251,241,0.65),transparent_30%),linear-gradient(180deg,#f8fbff_0%,#eef5ff_48%,#f8fafc_100%)]">
       <TopBar onBadgeNotifClick={() => setShowBadgeUnboxing(true)} />
       <main className="mx-auto max-w-7xl px-6 py-8">
         <div className="view-enter">
@@ -30,7 +30,7 @@ const Index = () => {
           {currentUser.role === "admin" && <AdminView />}
           {currentUser.role === "business" && (
             <div className="text-center py-20">
-              Redirigiendo al portal B2B empresarial...
+              Rol no habilitado en el piloto institucional UBOHub.
             </div>
           )}
         </div>
