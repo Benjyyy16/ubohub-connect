@@ -38,7 +38,7 @@ export const SkillBiteDashboard = ({
     setCurrentQuestionIndex(0);
   };
 
-  const handleQuestionComplete = (response: any) => {
+  const handleQuestionComplete = () => {
     const totalQuestions = activeRoute?.questions.length || 0;
     const isLastQuestion = currentQuestionIndex === totalQuestions - 1;
 

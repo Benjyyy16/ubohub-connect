@@ -1,42 +1,111 @@
-import { Link } from "react-router-dom";
-import { ArrowRight, CheckCircle2 } from "lucide-react";
 import LandingNavbar from "@/components/LandingNavbar";
-import { projects } from "@/data/ubohub";
-
-const glassPanel = "rounded-3xl border border-white/70 bg-white/65 shadow-[0_24px_80px_-40px_rgba(30,79,149,0.45)] backdrop-blur-xl";
+import { ArrowUpRight, Building2, MapPin } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useState } from "react";
+import AuthModal from "@/components/AuthModal";
 
 export default function Casos() {
+  const [modalOpen, setModalOpen] = useState(false);
+
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(191,219,254,0.75),transparent_34%),radial-gradient(circle_at_top_right,rgba(204,251,241,0.65),transparent_30%),linear-gradient(180deg,#f8fbff_0%,#eef5ff_48%,#f8fafc_100%)]">
-      <LandingNavbar onLogin={() => {}} onStart={() => {}} />
-      <main className="mx-auto max-w-6xl px-5 pb-16 pt-28 sm:px-6">
-        <section className={`${glassPanel} p-8`}>
-          <p className="text-xs font-extrabold uppercase tracking-widest text-primary">Casos UBOHub</p>
-          <h1 className="mt-3 text-4xl font-extrabold tracking-tight text-slate-950">Ejemplos de proyectos académicos con impacto formativo.</h1>
-          <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600">
-            Estos casos mock muestran cómo UBOHub puede vincular estudiantes, académicos y unidades institucionales en experiencias reales.
-          </p>
-        </section>
-        <section className="mt-6 grid gap-4 lg:grid-cols-2">
-          {projects.slice(0, 4).map((project) => (
-            <article key={project.id} className={`${glassPanel} p-6`}>
-              <div className="mb-3 flex flex-wrap gap-2">
-                <span className="rounded-full bg-primary-light px-3 py-1 text-xs font-bold text-primary">{project.faculty}</span>
-                {project.interdisciplinary && <span className="rounded-full bg-violet-50 px-3 py-1 text-xs font-bold text-violet-700">Interdisciplinario</span>}
+    <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
+      <LandingNavbar onLogin={() => setModalOpen(true)} onStart={() => setModalOpen(true)} />
+
+      <main className="flex-1 pt-32 pb-24">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="text-center max-w-3xl mx-auto mb-20">
+            <h1 className="text-5xl md:text-6xl font-extrabold tracking-tight mb-6">
+              Casos de <span className="text-emerald-600">Integración B2B</span>
+            </h1>
+            <p className="text-xl text-muted-foreground">
+              Cómo las principales corporaciones y centros educativos están eliminando el sesgo en la contratación.
+            </p>
+          </div>
+
+          <div className="space-y-12">
+
+            {/* Caso 1 */}
+            <div className="rounded-[2.5rem] bg-indigo-50/50 border border-indigo-100 p-8 sm:p-12 flex flex-col md:flex-row gap-12 group hover:bg-indigo-50 transition-colors">
+              <div className="md:w-1/3 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-6 text-indigo-700">
+                    <Building2 className="h-6 w-6" /> <span className="font-bold text-lg tracking-tight">TechCorp Global</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-500 mb-8 text-sm">
+                    <MapPin className="h-4 w-4" /> Santiago, Hub de Innovación
+                  </div>
+                </div>
+                <div>
+                  <div className="text-4xl font-extrabold text-slate-900 mb-1">3x</div>
+                  <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider">MÁS RÁPIDO EN ONBOARDING</div>
+                </div>
               </div>
-              <h2 className="text-xl font-extrabold text-slate-950">{project.title}</h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600">{project.description}</p>
-              <div className="mt-4 flex items-center gap-2 text-sm font-bold text-emerald-700">
-                <CheckCircle2 className="h-4 w-4" />
-                {project.matchScore}% compatibilidad de referencia
+
+              <div className="md:w-2/3 border-l md:border-indigo-200 md:pl-12">
+                <h3 className="text-3xl font-bold text-slate-900 mb-4 leading-tight">"Redujimos el tiempo de evaluación técnica en un 70% usando las métricas pre-validadas de TalentLink."</h3>
+                <p className="text-lg text-slate-600 mb-8 border-l-4 border-indigo-500 pl-4 py-1 italic">
+                  Las insignias criptográficas nos dieron total confianza de que los pasantes ya dominaban AWS y React antes de la primera entrevista, gracias a su certificación universitaria.
+                </p>
+                <div className="flex items-center gap-3">
+                  <div className="h-12 w-12 rounded-full bg-slate-200 overflow-hidden">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Jorge" alt="CTO" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900">Jorge Valdivia</div>
+                    <div className="text-sm text-slate-500">VP of Engineering, TechCorp Global</div>
+                  </div>
+                </div>
               </div>
-              <Link to={`/proyectos/${project.id}`} className="mt-5 inline-flex h-10 items-center gap-2 rounded-2xl bg-primary px-4 text-sm font-bold text-white">
-                Ver detalle <ArrowRight className="h-4 w-4" />
-              </Link>
-            </article>
-          ))}
-        </section>
+            </div>
+
+            {/* Caso 2 */}
+            <div className="rounded-[2.5rem] bg-emerald-50/50 border border-emerald-100 p-8 sm:p-12 flex flex-col md:flex-row gap-12 group hover:bg-emerald-50 transition-colors">
+              <div className="md:w-1/3 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 mb-6 text-emerald-700">
+                     <svg className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                       <path d="M12 2L2 22h20L12 2zm0 4.5l6.5 13h-13L12 6.5z" />
+                     </svg>
+                     <span className="font-bold text-lg tracking-tight">Banco Cima</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-slate-500 mb-8 text-sm">
+                    <MapPin className="h-4 w-4" /> Distrito Financiero
+                  </div>
+                </div>
+                <div>
+                  <div className="text-4xl font-extrabold text-slate-900 mb-1">+450</div>
+                  <div className="text-sm font-semibold text-slate-500 uppercase tracking-wider">TALENTOS CAPTADOS</div>
+                </div>
+              </div>
+
+              <div className="md:w-2/3 border-l md:border-emerald-200 md:pl-12">
+                <h3 className="text-3xl font-bold text-slate-900 mb-4 leading-tight">"Construimos toda nuestra cantera de analistas de datos usando el Match Engine Predictivo."</h3>
+                <p className="text-lg text-slate-600 mb-8 border-l-4 border-emerald-500 pl-4 py-1 italic">
+                  Buscábamos estudiantes con habilidades en SQL y Metodologías Ágiles. TalentLink orquestó matchings bidireccionales evitando que tuviéramos que filtrar 5000 currículums a mano.
+                </p>
+                <div className="flex items-center gap-3">
+                   <div className="h-12 w-12 rounded-full bg-slate-200 overflow-hidden">
+                    <img src="https://api.dicebear.com/9.x/avataaars/svg?seed=Andrea" alt="HR" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-slate-900">Andrea Schmidt</div>
+                    <div className="text-sm text-slate-500">Directora de Atracción de Talento, Banco Cima</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <div className="mt-16 text-center">
+            <Link to="/business" className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-lg hover:bg-slate-800 transition-colors">
+              Unete a la red empresarial <ArrowUpRight className="h-5 w-5" />
+            </Link>
+          </div>
+        </div>
       </main>
+
+      <AuthModal open={modalOpen} onClose={() => setModalOpen(false)} initialMode="login" />
     </div>
   );
 }

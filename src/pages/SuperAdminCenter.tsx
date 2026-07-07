@@ -587,7 +587,7 @@ export default function SuperAdminCenter() {
   );
 }
 
-function LayersIcon(props: any) {
+function LayersIcon(props: React.SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

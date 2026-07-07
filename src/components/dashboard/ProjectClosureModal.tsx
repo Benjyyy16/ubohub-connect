@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, type SVGProps } from "react";
 import {
   X, Award, FileCheck, CheckCircle2, Shield, FileText,
   Download, User, GraduationCap, Sparkles, Star, Cpu
@@ -25,7 +25,7 @@ const PROCESSING_STEPS = [
   { icon: FileSignatureIcon, text: "Firmando Resolución Oficial..." },
 ];
 
-function FileSignatureIcon(props: any) {
+function FileSignatureIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       {...props}

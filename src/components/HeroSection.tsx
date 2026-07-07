@@ -1,15 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { academicProfile, expectedMetrics, projects, studentProfile } from "@/data/ubohub";
 import { ArrowRight, Award, CalendarDays, CheckCircle2, ShieldCheck, Sparkles, Users } from "lucide-react";
-import { useNavigate } from "react-router-dom";
 
 interface HeroProps {
   onStudentLogin: () => void;
   onDemo: () => void;
 }
 
-const HeroSection = ({ onDemo }: HeroProps) => {
-  const navigate = useNavigate();
+const HeroSection = ({ onStudentLogin, onDemo }: HeroProps) => {
   const featuredProject = projects[0];
 
   return (
@@ -29,7 +27,7 @@ const HeroSection = ({ onDemo }: HeroProps) => {
             y recibe insignias verificables por las habilidades que desarrollas en la Universidad Bernardo O'Higgins.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button variant="cta-primary" size="lg" onClick={() => navigate("/proyectos")} className="h-12 gap-2 px-6 text-base">
+            <Button variant="cta-primary" size="lg" onClick={onStudentLogin} className="h-12 gap-2 px-6 text-base">
               Explorar proyectos <ArrowRight className="h-4 w-4" />
             </Button>
             <Button variant="cta-outline" size="lg" onClick={onDemo} className="h-12 px-6 text-base">

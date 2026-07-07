@@ -157,21 +157,19 @@ const NewInitiativePanel = ({ open, onClose }: Props) => {
 
   const isFormValid = title.trim() && faculty && selectedSkills.length > 0 && selectedInterests.length > 0;
 
+  if (!open) return null;
+
   return (
     <>
       {/* Overlay */}
       <div
-        className={`fixed inset-0 z-50 bg-black/50 backdrop-blur-sm transition-all duration-400 ${
-          open ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
+        className="fixed inset-0 z-50 bg-black/50 opacity-100 backdrop-blur-sm transition-all duration-400"
         onClick={onClose}
       />
 
       {/* Panel */}
       <div
-        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-2xl flex-col bg-card shadow-2xl transition-all duration-500 ease-out ${
-          open ? "translate-x-0 opacity-100" : "translate-x-full opacity-0"
-        }`}
+        className="fixed inset-y-0 right-0 z-50 flex w-full max-w-2xl translate-x-0 flex-col bg-card opacity-100 shadow-2xl transition-all duration-500 ease-out"
       >
         {/* Header */}
         <div className="flex items-center justify-between border-b border-border px-6 py-4">

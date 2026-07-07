@@ -178,7 +178,7 @@ export default function StudentView() {
                     Postular
                   </button>
                   <button
-                    onClick={() => navigate(`/proyectos/${project.id}`)}
+                    onClick={() => navigate("/workspace")}
                     className="inline-flex h-10 items-center gap-2 rounded-2xl border border-white/80 bg-white/70 px-4 text-sm font-bold text-slate-700 shadow-sm transition hover:bg-white"
                   >
                     <Eye className="h-4 w-4" />

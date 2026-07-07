@@ -434,7 +434,7 @@ export const landingSections = {
 
 export const navItems = [
   { label: "Inicio", href: "/" },
-  { label: "Proyectos", href: "/proyectos" },
+  { label: "Proyectos", href: "/#proyectos" },
   { label: "Cómo funciona", href: "/#como-funciona" },
   { label: "Insignias", href: "/#insignias" },
   { label: "Dashboard", href: "/dashboard" },

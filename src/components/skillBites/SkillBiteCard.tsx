@@ -19,7 +19,12 @@ import { SkillProgressRing } from './SkillProgressRing';
 
 interface SkillBiteCardProps {
   question: SkillBiteQuestion;
-  onComplete?: (response: any) => void;
+  onComplete?: (response: {
+    questionId: string;
+    userAnswer: string;
+    isCorrect: boolean;
+    pointsEarned: number;
+  }) => void;
   initialLevel?: number;
 }
 
