@@ -77,6 +77,7 @@ const P = forwardRef<HTMLParagraphElement, MotionProps<React.HTMLAttributes<HTML
 ));
 P.displayName = "MotionP";
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const motion = {
   button: Button,
   circle: Circle,
