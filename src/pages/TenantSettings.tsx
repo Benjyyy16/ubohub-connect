@@ -3,7 +3,7 @@ import {
   Palette, Blocks, Users, CreditCard, UploadCloud, CheckCircle2, 
   Settings, Link2, Key, HelpCircle, FileText, Download, Trash2, Shield
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion";
 import TopBar from "@/components/dashboard/TopBar";
 import { toast } from "sonner";
 

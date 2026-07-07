@@ -4,7 +4,7 @@ import {
   Trash2, Plus, Edit2, Github, Linkedin, CheckCircle2,
   X
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion";
 import { toast } from "sonner";
 import TopBar from "@/components/dashboard/TopBar";
 

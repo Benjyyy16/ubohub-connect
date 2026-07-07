@@ -5,7 +5,7 @@
  */
 
 import { useMemo } from 'react';
-import { motion } from 'framer-motion';
+import { motion } from "@/lib/motion";
 
 interface SkillProgressRingProps {
   level: number; // 0-100

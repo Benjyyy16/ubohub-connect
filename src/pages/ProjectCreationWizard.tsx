@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion";
 import { Sparkles, ArrowRight, Wand2, Calendar, Clock, BookOpen, Trash2, Plus, BrainCircuit, X } from "lucide-react";
 import TopBar from "@/components/dashboard/TopBar";
 import { useNavigate } from "react-router-dom";

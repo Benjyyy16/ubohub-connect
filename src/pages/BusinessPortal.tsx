@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion";
 import {
   Search, Lock, CheckCircle2, SlidersHorizontal, ChevronDown,
   ExternalLink, Building2, User, Award, Shield, Briefcase

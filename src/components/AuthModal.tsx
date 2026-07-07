@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ArrowRight, Building2, GraduationCap, Loader2, ShieldCheck, UserCog, X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion";
 import { toast } from "sonner";
 import { useAuth, User } from "@/context/AuthContext";
 import { roleUsers } from "@/data/ubohub";

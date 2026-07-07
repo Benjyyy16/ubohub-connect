@@ -34,7 +34,7 @@
  *    Ya están instaladas en el proyecto:
  *    ✓ react-hook-form
  *    ✓ zod
- *    ✓ framer-motion
+ *    ✓ local motion shim
  *    ✓ lucide-react
  *    ✓ shadcn/ui (Button, Input, Textarea)
  *    ✓ tailwindcss

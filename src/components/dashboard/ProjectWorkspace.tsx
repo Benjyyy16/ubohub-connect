@@ -4,7 +4,7 @@ import {
   CheckCircle, Clock, CircleDashed, UploadCloud, ChevronDown,
   Building2, GraduationCap, X, Upload
 } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion";
 import TopBar from "./TopBar";
 import { toast } from "sonner";
 

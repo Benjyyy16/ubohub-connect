@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "@/lib/motion";
 import {
   Network, BarChart3, ShieldCheck, User, BrainCircuit, Activity,
   ArrowRight, AlertTriangle, ShieldAlert, Lock, Fingerprint, Banknote,
